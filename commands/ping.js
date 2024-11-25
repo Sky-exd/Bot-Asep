@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   run: async (client, interaction) => {
-    interaction.reply("PONG");
+    interaction.reply("Terima kasih telah menghubungi aku😎");
   },
   data: new SlashCommandBuilder()
     .setName("ping")
