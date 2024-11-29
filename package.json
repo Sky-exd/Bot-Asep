@@ -1,17 +1,17 @@
 {
+  "name": "bot",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "Soraexd",
+  "license": "ISC",
+  "description": "",
   "dependencies": {
     "@tobyg74/tiktok-api-dl": "^1.2.0",
     "axios": "^1.7.7",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5"
-  },
-  "name": "bot",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "author": "Soraexd",
-  "license": "ISC",
-  "description": ""
+  }
 }
