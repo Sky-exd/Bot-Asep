@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: `${__dirname}/../.env` });
 const badWords = [
   "Anjing",
   "iclik",
@@ -85,12 +85,10 @@ const balesPesan = [
   },
 ];
 
-const config = {
-  token: process.env.TOKEN_DISCORD,
-};
-
 exports.badWords = badWords;
 exports.balesPesan = balesPesan;
 exports.responses = responses;
-exports.config = config;
+exports.config = {
+  token: process.env.TOKEN_DISCORD,
+};
 exports.commandsBot = commandsBot;
