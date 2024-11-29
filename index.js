@@ -54,7 +54,7 @@ client.on(Events.MessageCreate, async (message) => {
               .get(mentionedUser.id)
               .roles.cache.filter((role) => role.name !== "@everyone")
               .map((role) => role.name)
-              .join(", ")}`
+              .join(", ")}`,
           )
         : message.reply("Pengguna tidak ditemukan di server ini!")
       : message.reply("Tolong tag pengguna yang ingin dicek rolenya.");
@@ -67,26 +67,6 @@ client.on(Events.MessageCreate, async (message) => {
           files: [message.content.match(imageUrlPattern)[0]],
         })
       : message.reply("Tidak ada URL gambar yang ditemukan dalam pesan.");
-
-  // Perintah untuk menampilkan video melalui link
-  if (
-    message.content.startsWith("cek video") ||
-    /https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com|facebook\.com|twitter\.com|tiktok\.com|)/i.test(
-      message.content
-    )
-  ) {
-    const videoUrlPattern = /(https?:\/\/[^\s]+)/g;
-    const videoUrls = message.content.match(videoUrlPattern);
-    // TODO: nanti dibenerin
-    if (videoUrls) {
-      videoUrls.forEach((url) => {
-        console.log("hai");
-        console.log(url);
-      });
-    } else {
-      message.reply("Tidak ada URL video yang ditemukan dalam pesan.");
-    }
-  }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
