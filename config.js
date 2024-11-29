@@ -1,5 +1,5 @@
 require("dotenv").config();
-export const badWords = [
+const badWords = [
   "Anjing",
   "iclik",
   "babi",
@@ -10,14 +10,14 @@ export const badWords = [
   "4nj",
 ];
 
-export const responses = [
+const responses = [
   "Jaga bicara, ya!",
   "Kata-kata seperti itu tidak baik.",
   "Ayo bicara dengan sopan.",
   "Kurangi kata kasar, ok?",
 ];
 
-export const commandsBot = `
+const commandsBot = `
 **Daftar Perintah yang Didukung oleh Bot:**
 
 1. **Hallo sep**: Balasan: 'Hallo Juga bang'
@@ -37,7 +37,7 @@ export const commandsBot = `
 15. **check commands**: Menampilkan daftar perintah yang didukung oleh bot
 `;
 
-export const balesPesan = [
+const balesPesan = [
   {
     pesan: "Hallo sep",
     balesan: "hallo juga bang",
@@ -85,6 +85,12 @@ export const balesPesan = [
   },
 ];
 
-export const config = {
+const config = {
   token: process.env.TOKEN_DISCORD,
 };
+
+exports.badWords = badWords;
+exports.balesPesan = balesPesan;
+exports.responses = responses;
+exports.config = config;
+exports.commandsBot = commandsBot;

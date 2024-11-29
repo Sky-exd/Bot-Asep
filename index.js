@@ -1,6 +1,13 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
-const { config, responses, commandsBot, balesPesan } = require("./config");
+// const { config, responses, commandsBot, balesPesan } = require("./config");
+const {
+  badWords,
+  responses,
+  config,
+  balesPesan,
+  commandsBot,
+} = require("./config");
 
 const client = new Client({
   intents: [
