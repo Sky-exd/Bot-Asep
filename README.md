@@ -1,9 +1,9 @@
 BOT ASEP
-author AKA TEAM
+author AKA TEAM x gwe gans
 
-# jalanin bot nya
 
-bash
+jalanin bot nya
+
 ```
 npm run start
 ```
