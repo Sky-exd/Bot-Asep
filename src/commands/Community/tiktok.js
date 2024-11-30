@@ -4,10 +4,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
-const tempDir = path.join(__dirname, "../temp");
-
-const TiktokURLregex =
-  /https:\/\/(?:m|www|vm|vt|lite)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video|photo)\/|\?shareId=|\&item_id=)(\d+))|\w+)/;
+const tempDir = path.join(__dirname, "../../../temp/");
 
 const downloadFileTiktok = async (urlVideo, dest) => {
   let file = fs.createWriteStream(dest);
@@ -43,53 +40,63 @@ module.exports = {
         .setDescription("https://vt.tiktok.com/ZSjMk4GRw/")
         .setRequired(true),
     ),
-  async run(client, interaction) {
-    let urlMatch = interaction.options.getString("url");
-    if (urlMatch.match(TiktokURLregex)) {
-      interaction.deferReply().then(() => {
-        const linkTiktok = Downloader(urlMatch, { version: "v2" });
-        linkTiktok.then(async (rsult) => {
-          if (rsult.result.type === "video") {
-            let nameFileTemp = `tempTiktok${Math.ceil(
-              Math.random() * 5000,
-            )}_tiktok.mp4`;
-            let tempFile = path.join(tempDir, nameFileTemp);
-            try {
-              await downloadFileTiktok(rsult.result.video, tempFile);
-              let stats = fs.statSync(tempFile);
-              stats.size = Math.round(stats.size / 1024);
-              if (stats.size < 9) {
-                return interaction
-                  .editReply("tiktok gagal di send")
-                  .then(() => {
-                    setTimeout(() => {
-                      if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
-                    }, 3000);
-                  });
-              }
-              const tiktokVideo = new AttachmentBuilder()
-                .setFile(tempFile)
-                .setName("tiktok-video.mp4");
+  async run(interaction) {
+    const urlTikok = interaction.options.getString("url");
+    await interaction.deferReply();
+    const tiktokDownloader = await Downloader(urlTikok, { version: "v2" });
+    if (tiktokDownloader.status === "error") {
+      return await interaction.editReply({
+        content: "Link Tiktok ada yang salah bang !",
+      });
+    }
 
-              interaction.editReply({ files: [tiktokVideo] }).then(() => {
-                fs.unlinkSync(tempFile);
-              });
-            } catch (error) {
-              console.log(error);
+    if (typeof tiktokDownloader.result === "undefined") {
+      return await interaction.editReply({
+        content: "Gagal download tiktok nya bang !",
+      });
+    }
+
+    if (tiktokDownloader.result.type === "video") {
+      let nameFileTemp = `tempTiktok${Math.ceil(
+        Math.random() * 5000,
+      )}_tiktok.mp4`;
+      let tempFile = path.join(tempDir, nameFileTemp);
+      try {
+        await downloadFileTiktok(tiktokDownloader.result.video, tempFile);
+        let stats = fs.statSync(tempFile);
+        stats.size = Math.round(stats.size / 1024);
+        if (stats.size < 9) {
+          return interaction.editReply("tiktok gagal di send").then(() => {
+            setTimeout(() => {
               if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
-              interaction.editReply("Ada yang salah bang bentar");
-            }
-          } else if (rsult.result.type === "image") {
-            interaction.editReply({ content: "belom didukung" });
-          }
-        });
-      });
+            }, 3000);
+          });
+        }
+        const tiktokVideo = new AttachmentBuilder()
+          .setFile(tempFile)
+          .setName("tiktok-video.mp4");
+
+        return await interaction
+          .editReply({ files: [tiktokVideo] })
+          .then(() => {
+            setTimeout(() => {
+              if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+            }, 3000);
+          });
+      } catch (err) {
+        console.error(err);
+        return await interaction
+          .editReply({
+            content: "Ada yang salah sama download file nya",
+          })
+          .then(() => {
+            setTimeout(() => {
+              if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+            }, 3000);
+          });
+      }
     } else {
-      interaction.reply("link tiktok salah bang").then(() => {
-        setTimeout(() => {
-          interaction.deleteReply();
-        }, 5000);
-      });
+      return await interaction.editReply("Belom di dukung bang");
     }
   },
 };

@@ -90,5 +90,7 @@ exports.balesPesan = balesPesan;
 exports.responses = responses;
 exports.config = {
   token: process.env.TOKEN_DISCORD,
+  clientID: process.env.CLIENT_ID,
+  guildID: process.env.GUILD_ID,
 };
 exports.commandsBot = commandsBot;
