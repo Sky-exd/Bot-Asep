@@ -3,10 +3,8 @@ author AKA TEAM
 
 # jalanin bot nya
 
-bash```
-npm run start
-
+bash
 ```
-
+npm run start
 ```
 
