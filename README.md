@@ -1,5 +1,12 @@
 BOT ASEP
 author AKA TEAM
 
+# jalanin bot nya
 
-AA
+bash```
+npm run start
+
+```
+
+```
+
