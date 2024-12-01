@@ -33,7 +33,7 @@ module.exports = {
                 .get(mentionedUser.id)
                 .roles.cache.filter((role) => role.name !== "@everyone")
                 .map((role) => role.name)
-                .join(", ")}`,
+                .join(", ")}`
             )
           : message.reply("Pengguna tidak ditemukan di server ini!")
         : message.reply("Tolong tag pengguna yang ingin dicek rolenya.");
