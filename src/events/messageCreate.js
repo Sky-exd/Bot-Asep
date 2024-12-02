@@ -6,6 +6,12 @@ const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
 module.exports = {
   name: Events.MessageCreate,
   async run(message, client) {
+    const prefix = "?";
+
+    if (message.content.startsWith(prefix)) {
+      message.reply("helo ges");
+    }
+
     if (message.author.bot) return;
     if (message.content === "cek commands") message.reply(commandsBot);
 
@@ -33,7 +39,7 @@ module.exports = {
                 .get(mentionedUser.id)
                 .roles.cache.filter((role) => role.name !== "@everyone")
                 .map((role) => role.name)
-                .join(", ")}`
+                .join(", ")}`,
             )
           : message.reply("Pengguna tidak ditemukan di server ini!")
         : message.reply("Tolong tag pengguna yang ingin dicek rolenya.");
