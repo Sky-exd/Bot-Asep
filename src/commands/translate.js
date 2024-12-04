@@ -5,6 +5,10 @@ import { listBahasa } from "../config.js";
 const ppdc =
   "https://i.pinimg.com/736x/50/70/8a/50708afb9456ecbb834f1bf6a82b319f.jpg";
 
+function capitalizeFirstLetter(val) {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
+
 export const data = new SlashCommandBuilder()
   .setName("translate")
   .setDescription("Translate bahasa biar lebih mudah")
@@ -41,12 +45,12 @@ export async function run({ interaction }) {
       .setTitle("Hasil Translate")
       .addFields(
         {
-          name: `${teksBahasa.name}`,
+          name: `${capitalizeFirstLetter(teksBahasa.name)}`,
           value: kalimat,
           inline: true,
         },
         {
-          name: `${bahasa.name}`,
+          name: `${capitalizeFirstLetter(bahasa.name)}`,
           value: text,
           inline: true,
         },
@@ -75,7 +79,7 @@ export async function autocomplete({ interaction }) {
   );
   const hasil = pilihBahasa.map((bhs) => {
     return {
-      name: bhs.name,
+      name: capitalizeFirstLetter(bhs.name),
       value: bhs.value,
     };
   });
