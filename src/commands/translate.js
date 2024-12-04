@@ -1,6 +1,9 @@
 import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
-import { translate } from "@vitalets/google-translate-api";
+import { translate } from "google-translate-api-x";
 import { listBahasa } from "../config.js";
+
+const ppdc =
+  "https://i.pinimg.com/736x/50/70/8a/50708afb9456ecbb834f1bf6a82b319f.jpg";
 
 export const data = new SlashCommandBuilder()
   .setName("translate")
@@ -27,17 +30,18 @@ export async function run({ interaction }) {
   await interaction.deferReply();
 
   try {
-    const { text } = await translate(kalimat, { to: keBahasa });
+    const { text, from } = await translate(kalimat, { to: keBahasa });
+    const teksBahasa = listBahasa.find((fd) => fd.value === from.language.iso);
 
     const embedHasil = new EmbedBuilder()
       .setAuthor({
         name: "Asep cihuy",
-        iconURL: "https://slate.dan.onl/slate.png",
+        iconURL: ppdc,
       })
       .setTitle("Hasil Translate")
       .addFields(
         {
-          name: "Teks",
+          name: `${teksBahasa.name}`,
           value: kalimat,
           inline: true,
         },
@@ -50,7 +54,7 @@ export async function run({ interaction }) {
       .setColor(0x00b0f4)
       .setFooter({
         text: "Terimakasih telah memakai bot Asep!",
-        iconURL: "https://slate.dan.onl/slate.png",
+        iconURL: ppdc,
       })
       .setTimestamp();
 

@@ -94,6 +94,42 @@ export const config = {
 
 export const listBahasa = [
   {
+    name: "Abkhaz",
+    value: "ab",
+  },
+  {
+    name: "Acehnese",
+    value: "ace",
+  },
+  {
+    name: "Acholi",
+    value: "ach",
+  },
+  {
+    name: "Afrikaans",
+    value: "af",
+  },
+  {
+    name: "Albanian",
+    value: "sq",
+  },
+  {
+    name: "Alur",
+    value: "alz",
+  },
+  {
+    name: "Amharic",
+    value: "am",
+  },
+  {
+    name: "Arabic",
+    value: "ar",
+  },
+  {
+    name: "Armenian",
+    value: "hy",
+  },
+  {
     name: "Inggris",
     value: "en",
   },
@@ -121,13 +157,12 @@ export const listBahasa = [
     name: "Rusia",
     value: "ru",
   },
+  {
+    name: "Indonesia",
+    value: "id",
+  },
+  {
+    name: "Malaysia",
+    value: "my",
+  },
 ];
-
-// module.exports = {
-//   badWords,
-//   balesPesan,
-//   responses,
-//   commandsBot,
-//   config,
-//   listBahasa,
-// };
