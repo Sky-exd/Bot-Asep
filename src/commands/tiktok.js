@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const tempDir = path.join(__dirname, "../../../temp/");
+const tempDir = path.join(__dirname, "../../temp");
 
 const downloadFileTiktok = async (urlVideo, dest) => {
   let file = fs.createWriteStream(dest);
@@ -42,13 +42,11 @@ export const data = new SlashCommandBuilder()
       .setDescription("https://vt.tiktok.com/ZSjMk4GRw/")
       .setRequired(true),
   );
+
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {
   const urlTikok = interaction.options.getString("url");
   await interaction.deferReply();
-  await interaction.editReply({
-    content: "Tunggu bentar yaa lagi prosess... ",
-  });
   const tiktokDownloader = await Downloader(urlTikok, { version: "v2" });
   if (tiktokDownloader.status === "error") {
     return await interaction.editReply({

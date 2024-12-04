@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits, ActivityType } from "discord.js";
 import { CommandKit } from "commandkit";
 import { fileURLToPath } from "url";
 import path from "path";
-import { config } from "./config";
+import { config } from "./config.js";
 
 const client = new Client({
   intents: [

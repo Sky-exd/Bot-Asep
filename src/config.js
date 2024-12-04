@@ -1,4 +1,3 @@
-// require("dotenv").config({ path: `${__dirname}/../.env` });
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -95,11 +94,11 @@ export const config = {
 
 export const listBahasa = [
   {
-    name: "English",
+    name: "Inggris",
     value: "en",
   },
   {
-    name: "German",
+    name: "Jerman",
     value: "de",
   },
   {
@@ -107,7 +106,7 @@ export const listBahasa = [
     value: "ja",
   },
   {
-    name: "Korean",
+    name: "Korea",
     value: "ko",
   },
   {

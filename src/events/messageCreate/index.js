@@ -1,4 +1,4 @@
-import { badWords, balesPesan, responses, commandsBot } from "../../config";
+import { badWords, balesPesan, responses, commandsBot } from "../../config.js";
 
 const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
 
