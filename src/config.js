@@ -1,5 +1,8 @@
-require("dotenv").config({ path: `${__dirname}/../.env` });
-const badWords = [
+// require("dotenv").config({ path: `${__dirname}/../.env` });
+import dotenv from "dotenv";
+dotenv.config();
+
+export const badWords = [
   "Anjing",
   "iclik",
   "babi",
@@ -10,14 +13,14 @@ const badWords = [
   "4nj",
 ];
 
-const responses = [
+export const responses = [
   "Jaga bicara, ya!",
   "Kata-kata seperti itu tidak baik.",
   "Ayo bicara dengan sopan.",
   "Kurangi kata kasar, ok?",
 ];
 
-const commandsBot = `
+export const commandsBot = `
 **Daftar Perintah yang Didukung oleh Bot:**
 
 1. **Hallo sep**: Balasan: 'Hallo Juga bang'
@@ -33,11 +36,11 @@ const commandsBot = `
 11. **asep on 24jam kah?**: Balasan: 'ya enggak dong, orang pc yang buat asep aja gak 24 jam nyala bagaimana asep mau nyala'
 12. **p**: Balasan: 'singkat sekali.p'
 13. **cek role @user**: Menampilkan role pengguna yang ditandai
-14. **check gambar <URL>**: Menampilkan gambar dari URL yang diberikan
-15. **check commands**: Menampilkan daftar perintah yang didukung oleh bot
+14. **cek gambar <URL>**: Menampilkan gambar dari URL yang diberikan
+15. **cek perintah**: Menampilkan daftar perintah yang didukung oleh bot
 `;
 
-const balesPesan = [
+export const balesPesan = [
   {
     pesan: "Hallo sep",
     balesan: "hallo juga bang",
@@ -84,13 +87,48 @@ const balesPesan = [
     balesan: "singkat sekali p doang",
   },
 ];
-
-exports.badWords = badWords;
-exports.balesPesan = balesPesan;
-exports.responses = responses;
-exports.config = {
+export const config = {
   token: process.env.TOKEN_DISCORD,
   clientID: process.env.CLIENT_ID,
   guildID: process.env.GUILD_ID,
 };
-exports.commandsBot = commandsBot;
+
+export const listBahasa = [
+  {
+    name: "English",
+    value: "en",
+  },
+  {
+    name: "German",
+    value: "de",
+  },
+  {
+    name: "Jepang",
+    value: "ja",
+  },
+  {
+    name: "Korean",
+    value: "ko",
+  },
+  {
+    name: "Vietnam",
+    value: "vi",
+  },
+  {
+    name: "Sunda",
+    value: "su",
+  },
+  {
+    name: "Rusia",
+    value: "ru",
+  },
+];
+
+// module.exports = {
+//   badWords,
+//   balesPesan,
+//   responses,
+//   commandsBot,
+//   config,
+//   listBahasa,
+// };

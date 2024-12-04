@@ -1,7 +1,8 @@
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
-const fs = require("fs");
-const { config } = require("./config");
-const path = require("path");
+import { Client, GatewayIntentBits, ActivityType } from "discord.js";
+import { CommandKit } from "commandkit";
+import { fileURLToPath } from "url";
+import path from "path";
+import { config } from "./config";
 
 const client = new Client({
   intents: [
@@ -12,43 +13,32 @@ const client = new Client({
   ],
 });
 
-client.cooldowns = new Collection();
-client.commands = new Collection();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const foldersPath = path.join(__dirname, "commands");
-const commandFolders = fs.readdirSync(foldersPath);
+async function initBot() {
+  new CommandKit({
+    client,
+    eventsPath: path.join(__dirname, "events"),
+    commandsPath: path.join(__dirname, "commands"),
+    bulkRegister: true,
+  });
 
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".js"));
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    if ("data" in command && "run" in command) {
-      client.commands.set(command.data.name, command);
-    } else {
-      console.log(
-        `[WARNING] Perintah di file ${filePath} tidak ada "data" dan "run"`,
-      );
-    }
+  try {
+    await client.login(config.token);
+  } catch (err) {
+    console.log(`Isi Token bot nya !`);
   }
+
+  client.user.setPresence({
+    activities: [
+      {
+        name: `Asep Bot !`,
+        type: ActivityType.Custom,
+        state: "Asep siap melayani!",
+      },
+    ],
+    status: "online",
+  });
 }
 
-const eventsPath = path.join(__dirname, "events");
-const eventFiles = fs
-  .readdirSync(eventsPath)
-  .filter((file) => file.endsWith(".js"));
-
-for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
-  if (event.once) {
-    client.once(event.name, (...args) => event.run(...args, client));
-  } else {
-    client.on(event.name, (...args) => event.run(...args, client));
-  }
-}
-
-client.login(config.token);
+initBot();
