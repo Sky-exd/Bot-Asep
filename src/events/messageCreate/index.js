@@ -11,7 +11,7 @@ export default function (message, client) {
   for (const data of balesPesan)
     if (msg === data.pesan) message.reply(data.balesan);
 
-  if (message.mentions.has(client.user)) message.reply("Kenapa bang?");
+  if (message.mentions.has(client.user)) message.reply("Ada yang bisa di bantu?");
 
   if (msg === "cek perintah") message.reply(commandsBot);
 
