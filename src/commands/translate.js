@@ -3,7 +3,7 @@ import { translate } from "google-translate-api-x";
 import { listBahasa } from "../config.js";
 
 const ppdc =
-  "https://i.pinimg.com/736x/50/70/8a/50708afb9456ecbb834f1bf6a82b319f.jpg";
+  "https://i.pinimg.com/736x/2e/da/3f/2eda3f3eab9214d29dd3f671dbda36ec.jpg";
 
 function capitalizeFirstLetter(val) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -39,7 +39,7 @@ export async function run({ interaction }) {
 
     const embedHasil = new EmbedBuilder()
       .setAuthor({
-        name: "Asep cihuy",
+        name: "Uciha Asep",
         iconURL: ppdc,
       })
       .setTitle("Hasil Translate")
@@ -57,7 +57,7 @@ export async function run({ interaction }) {
       )
       .setColor(0x00b0f4)
       .setFooter({
-        text: "Terimakasih telah memakai bot Asep!",
+        text: "Terimakasih telah memakai jasa kami!",
         iconURL: ppdc,
       })
       .setTimestamp();
