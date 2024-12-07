@@ -90,6 +90,7 @@ export const config = {
   token: process.env.TOKEN_DISCORD,
   clientID: process.env.CLIENT_ID,
   guildID: process.env.GUILD_ID,
+  openaiKEY: process.env.OPENAI_API_KEY,
 };
 const nameLanguage = {
   afar: "aa",
