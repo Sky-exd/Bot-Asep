@@ -15,11 +15,12 @@ const client = new Client({
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function initBot() {
+(async () => {
   new CommandKit({
     client,
     eventsPath: path.join(__dirname, "events"),
     commandsPath: path.join(__dirname, "commands"),
+    devUserIds: ["1160607274008580126", "587193866831003662"],
     bulkRegister: true,
   });
 
@@ -39,6 +40,4 @@ async function initBot() {
     ],
     status: "online",
   });
-}
-
-initBot();
+})();
