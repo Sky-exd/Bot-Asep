@@ -35,7 +35,7 @@ const downloadFileTiktok = async (urlVideo, dest) => {
 
 export const data = new SlashCommandBuilder()
   .setName("sendvt")
-  .setDescription("Kirim video tiktok")
+  .setDescription("Kirim video tiktok ... ")
   .addStringOption((options) =>
     options
       .setName("url")
