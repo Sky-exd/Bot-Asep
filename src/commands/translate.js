@@ -72,7 +72,13 @@ export async function run({ interaction }) {
   } catch (err) {
     console.error(err);
     await interaction.editReply({
-      content: "Gagal Translate bang ! Coba lagi nanti",
+      embeds: [
+        new EmbedBuilder()
+          .setAuthor({ name: "Uciha Asep", iconURL: ppdc })
+          .setTitle("Failed Translate")
+          .setDescription("Gagal Translate Bang! Silakan coba lagi nantii")
+          .setColor(0xf72c5b),
+      ],
     });
   }
 }
