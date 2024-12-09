@@ -8,7 +8,7 @@ export const data = new SlashCommandBuilder()
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction, client, handler }) => {
   await interaction.reply("Terimkasih telah menghubungi asep ... !");
-  handler.reloadCommands();
+  await handler.reloadCommands();
 };
 
 /** @type {import('commandkit').CommandOptions} */
