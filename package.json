@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --ext js,ts,json ./src/index.js",
+    "dev": "npx nodemon --ext js,ts,json ./src/index.js",
     "start": "node ./src/index.js"
   },
   "author": "Soraexd",
@@ -12,7 +12,7 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "@tobyg74/tiktok-api-dl": "^1.2.0",
+    "@tobyg74/tiktok-api-dl": "^1.2.2",
     "axios": "^1.7.7",
     "commandkit": "^0.1.10",
     "discord.js": "^14.16.3",
@@ -20,6 +20,9 @@
     "google-translate-api-x": "^10.7.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
     "nodemon": "^3.1.7"
   }
 }

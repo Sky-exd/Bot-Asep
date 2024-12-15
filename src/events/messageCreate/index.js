@@ -26,13 +26,14 @@ export default async function (message, client) {
     mentionedUser
       ? message.guild.members.cache.get(mentionedUser.id)
         ? message.reply(
-          `Role untuk ${mentionedUser.username
-          } : ${message.guild.members.cache
-            .get(mentionedUser.id)
-            .roles.cache.filter((role) => role.name !== "@everyone")
-            .map((role) => role.name)
-            .join(", ")}`,
-        )
+            `Role untuk ${
+              mentionedUser.username
+            } : ${message.guild.members.cache
+              .get(mentionedUser.id)
+              .roles.cache.filter((role) => role.name !== "@everyone")
+              .map((role) => role.name)
+              .join(", ")}`,
+          )
         : message.reply("Pengguna tidak ditemukan di server ini!")
       : message.reply("Tolong tag pengguna yang ingin dicek rolenya.");
   }
@@ -41,7 +42,7 @@ export default async function (message, client) {
   if (msg.startsWith("cek gambar"))
     msg.match(imageUrlPattern)
       ? message.channel.send({
-        files: [message.content.match(imageUrlPattern)[0]],
-      })
+          files: [message.content.match(imageUrlPattern)[0]],
+        })
       : message.reply("Tidak ada URL gambar yang ditemukan dalam pesan.");
 }

@@ -1,10 +1,11 @@
-import { SlashCommandBuilder } from "discord.js";
-import { config } from "../config.js";
+import { ApplicationCommandOptionType, ApplicationCommandType, MessageFlags } from "discord.js";
+import { config } from "../../config.js";
 import {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
+import create from "../../utils/embeds.js";
 
 const GENERATION_CONFIG = {
   temperature: 0.9,
@@ -33,25 +34,27 @@ const SAFETY_SETTINGS = [
 ];
 
 /** @type {import('commandkit').CommandData} */
-export const data = new SlashCommandBuilder()
-  .setName("tanyaasep")
-  .setDescription("Tanya apa ke asep?")
-  .addStringOption((option) =>
-    option
-      .setName("pertanyaan")
-      .setDescription("Mau Tanya Apa ke Asep?")
-      .setRequired(true),
-  );
-
+export const data = {
+  name: "tanyaasep",
+  description: "Tanya Apapun ke AsepAI",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "pertanyaan",
+      description: "Silakan Mau tanya apa?",
+      type: ApplicationCommandOptionType.String,
+      required: true
+    }
+  ]
+}
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction }) => {
-  if (!interaction.deferred) await interaction.deferReply();
   const pertanyaan = interaction.options.getString("pertanyaan");
+  if (!interaction.deferred && !interaction.replied)
+    await interaction.deferReply();
   try {
     const geminiAI = new GoogleGenerativeAI(config.geminiAPIKey);
-    const modelGemini = geminiAI.getGenerativeModel({
-      model: "gemini-1.0-pro",
-    });
+    const modelGemini = geminiAI.getGenerativeModel({ model: "gemini-1.0-pro" });
     const chat = modelGemini.startChat({
       generationConfig: GENERATION_CONFIG,
       safetySettings: SAFETY_SETTINGS,
@@ -59,9 +62,13 @@ export const run = async ({ interaction }) => {
     });
     const result = await chat.sendMessage(pertanyaan);
     if (result.error) {
-      console.error("Gemini AI ERROR Coba lagi nanti", err);
+      console.error("Gemini AI ERROR Coba lagi nanti");
       return await interaction.editReply({
-        content: "Asep AI Sedang ada yang error! coba lagi nanti ",
+        embeds: [
+          create("error", {
+            description: "Asep AI Sedang ada yang error! coba lagi nanti ",
+          }),
+        ],
       });
     }
     const respon = result.response.text();
@@ -72,9 +79,17 @@ export const run = async ({ interaction }) => {
     }
   } catch (err) {
     console.error(err);
-    await interaction.reply("ada yang error bang sama ai nya sabar !");
+    return interaction.editReply({
+      embeds: [
+        create("error", {
+          description:
+            "Ada yang salah dengan ai gemini! Tolong Lapor pembuat nya!",
+        }),
+      ],
+      flags: MessageFlags.Ephemeral,
+    });
   }
 };
 
 /** @type {import('commandkit').CommandOptions} */
-export const options = {};
+// export const options = {};
