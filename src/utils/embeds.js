@@ -11,29 +11,34 @@ const EmbedObject = {
     icon_url: userProfile,
   },
 };
-function create(type, options) {
-  switch (type.toLowerCase()) {
-    case "success":
-      EmbedObject.color = 0x6ec207;
-      break;
-    case "info":
-      EmbedObject.color = 0x00b0f4;
-      break;
-    case "error":
-      EmbedObject.color = 0xf72c5b;
-      break;
-    case "warning":
-      EmbedObject.color = 0xfcc737;
-      break;
-    case "neutral":
-      EmbedObject.color = 0x89a8b2;
-      break;
-    default:
-      throw Error("Error Tipe Gada di data");
+export default function create({ type, message, title, options }) {
+  if (message) {
+    EmbedObject.description = message;
+  }
+  if (title) {
+    EmbedObject.title = title;
   }
   if (typeof options === "object" && options !== null) {
     Object.assign(EmbedObject, options);
   }
+  switch (type.toLowerCase()) {
+    case "success":
+      EmbedObject.color = 0x6ec207; // #6ec207
+      break;
+    case "info":
+      EmbedObject.color = 0x00b0f4; //#00b0f4
+      break;
+    case "error":
+      EmbedObject.color = 0xf72c5b; //#f72c5b
+      break;
+    case "warning":
+      EmbedObject.color = 0xfcc737; //#fcc737
+      break;
+    case "secondary":
+      EmbedObject.color = 0x89a8b2; //#89a8b2
+      break;
+    default:
+      throw Error("Error Tipe Gada di data");
+  }
   return EmbedObject;
 }
-export default create;

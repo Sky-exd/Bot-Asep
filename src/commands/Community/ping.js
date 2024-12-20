@@ -5,8 +5,9 @@ export const data = {
 }
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, handler }) => {
   await interaction.deferReply();
+  await handler.reloadCommands()
   interaction.followUp("Terimkasih telah menghubungi asep ... !");
 };
 

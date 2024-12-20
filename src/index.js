@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, ActivityType, Partials } from "discord.js";
 import { CommandKit } from "commandkit";
 import { fileURLToPath } from "url";
-import { dirname, join } from "node:path";
+import { dirname, join } from "path";
 import { config } from "./config.js";
 
 const client = new Client({
@@ -14,7 +14,8 @@ const client = new Client({
   partials: [Partials.User, Partials.Message, Partials.GuildMember],
 });
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 (async () => {
   new CommandKit({
@@ -22,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
     eventsPath: join(__dirname, "events"),
     commandsPath: join(__dirname, "commands"),
     devUserIds: ["1160607274008580126", "587193866831003662"],
-    bulkRegister: true,
+    // bulkRegister: true,
   });
 
   try {
@@ -32,7 +33,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
         {
           name: `${client.user.username} Bot !`,
           type: ActivityType.Custom,
-          state: "Asep siap melayani!",
+          state: "Asep AI siap melayani!",
         },
       ],
       status: "online",

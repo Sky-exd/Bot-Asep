@@ -1,6 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+export const pemilikbot = "akin";
+
+export const config = {
+  token: process.env.TOKEN_DISCORD,
+  clientID: process.env.CLIENT_ID,
+  guildID: process.env.GUILD_ID,
+  geminiAPIKey: process.env.GEMINI_API_KEY,
+};
+
 export const badWords = [
   "Anjing",
   "iclik",
@@ -86,12 +95,6 @@ export const balesPesan = [
     balesan: "singkat sekali p doang",
   },
 ];
-export const config = {
-  token: process.env.TOKEN_DISCORD,
-  clientID: process.env.CLIENT_ID,
-  guildID: process.env.GUILD_ID,
-  geminiAPIKey: process.env.GEMINI_API_KEY,
-};
 export const listISOCountry = {
   ab: "Abkhaz",
   ace: "Acehnese",

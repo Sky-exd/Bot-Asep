@@ -54,7 +54,7 @@ export const run = async ({ interaction }) => {
     await interaction.deferReply();
   try {
     const geminiAI = new GoogleGenerativeAI(config.geminiAPIKey);
-    const modelGemini = geminiAI.getGenerativeModel({ model: "gemini-1.0-pro" });
+    const modelGemini = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     const chat = modelGemini.startChat({
       generationConfig: GENERATION_CONFIG,
       safetySettings: SAFETY_SETTINGS,
@@ -65,8 +65,9 @@ export const run = async ({ interaction }) => {
       console.error("Gemini AI ERROR Coba lagi nanti");
       return await interaction.editReply({
         embeds: [
-          create("error", {
-            description: "Asep AI Sedang ada yang error! coba lagi nanti ",
+          create({
+            type: "error",
+            message: "Asep AI Sedang ada yang error! coba lagi nanti ",
           }),
         ],
       });
@@ -81,8 +82,9 @@ export const run = async ({ interaction }) => {
     console.error(err);
     return interaction.editReply({
       embeds: [
-        create("error", {
-          description:
+        create({
+          type: "error",
+          message:
             "Ada yang salah dengan ai gemini! Tolong Lapor pembuat nya!",
         }),
       ],

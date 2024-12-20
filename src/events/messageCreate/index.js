@@ -4,6 +4,8 @@ const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
 
 export default async function (message, client) {
   if (message.author.bot) return;
+  if (message.channel.type === "dm")
+    return message.reply("Maaf, saya tidak bisa membaca pesan di DM.");
   if (message.mentions.has(client.user)) message.reply("Kenapa Bang!");
 
   const msg = message.content.toLowerCase();

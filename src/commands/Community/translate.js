@@ -46,22 +46,25 @@ export async function run({ interaction }) {
 
   try {
     const { text, from } = await translate(kalimat, { to: keBahasa });
-    await interaction.editReply({
+    return await interaction.editReply({
       embeds: [
-        create("success", {
+        create({
+          type: "info",
           title: "Hasil Translate",
-          fields: [
-            {
-              name: `${languages[getCode(from.language.iso)]}`,
-              value: kalimat,
-              inline: true,
-            },
-            {
-              name: `${languages[getCode(keBahasa)]}`,
-              value: text,
-              inline: true,
-            },
-          ],
+          options: {
+            fields: [
+              {
+                name: `${languages[getCode(from.language.iso)]}`,
+                value: kalimat,
+                inline: true,
+              },
+              {
+                name: `${languages[getCode(keBahasa)]}`,
+                value: text,
+                inline: true,
+              },
+            ],
+          }
         }),
       ],
     });
@@ -69,9 +72,10 @@ export async function run({ interaction }) {
     console.error(err);
     await interaction.editReply({
       embeds: [
-        create("error", {
+        create({
+          type: "error",
           title: "Gagal Translate!!",
-          description:
+          message:
             "Silakahn Pilih Bahasa yang tersedia ! jangan cari yang gada yaa",
         }),
       ],

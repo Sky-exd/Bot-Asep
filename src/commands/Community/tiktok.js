@@ -11,7 +11,8 @@ import embedbase from "../../utils/embeds.js";
 import create from "../../utils/embeds.js";
 import { finished, Readable } from "stream";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const tempDir = path.join(__dirname, "../../../temp");
 
 const downloadFile = async (url, fileName) => {
@@ -48,8 +49,9 @@ export async function run({ interaction }) {
     if (tiktokDownloader.status === "error") {
       return interaction.editReply({
         embeds: [
-          embedbase("error", {
-            description: "Link Tiktok ada yang salah bang !",
+          embedbase({
+            type: "error",
+            message: "Link Tiktok ada yang salah bang !",
           }),
         ],
       });
@@ -57,8 +59,9 @@ export async function run({ interaction }) {
     if (typeof tiktokDownloader.result === "undefined") {
       return interaction.editReply({
         embeds: [
-          embedbase("error", {
-            description: "Gagal download tiktok nya bang !",
+          embedbase({
+            type: "error",
+            message: "Gagal download tiktok nya bang !",
           }),
         ],
       });
@@ -75,8 +78,9 @@ export async function run({ interaction }) {
           const size = fs.statSync(tempFile).size
           if (size >= 100 * 1024 * 1024 || size >= 25 * 1024 * 1024) {
             return await interaction.editReply({
-              embeds: [create("error", {
-                description: "File terlalu besar bang !"
+              embeds: [create({
+                type: "error",
+                message: "File terlalu besar bang !"
               })]
             })
           }
@@ -84,26 +88,28 @@ export async function run({ interaction }) {
             const tiktokVideo = new AttachmentBuilder(tempFile, {
               name: "tiktok-video.mp4",
             });
-            await interaction.editReply({
+            return await interaction.editReply({
               files: [tiktokVideo],
             });
           } catch (error) {
             console.error(error);
             await interaction.editReply({
               embeds: [
-                embedbase("error", {
-                  description: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
+                embedbase({
+                  type: "error",
+                  message: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
                 }),
               ],
             });
           }
         } catch (err) {
           console.error(err);
-          return interaction
+          return await interaction
             .editReply({
               embeds: [
-                embedbase("error", {
-                  description: "Ada yang salah sama download file nya",
+                embedbase({
+                  type: "error",
+                  message: "Ada yang salah sama download file nya",
                 }),
               ],
             })
@@ -115,24 +121,38 @@ export async function run({ interaction }) {
         break;
       }
       case "image": {
-        await interaction.editReply("Belom di dukung bang");
+        await interaction.editReply({
+          embeds: [
+            embedbase({
+              type: "info",
+              message: "tiktok gambar belom di dukung bang!",
+            })
+          ]
+        });
         break;
       }
       default:
-        return interaction.editReply({
+        return await interaction.editReply({
           embeds: [
-            embedbase("error", {
-              description: "Tipe Video Tidak Ditemukan bang !!",
+            embedbase({
+              type: "error",
+              message: "Tipe Video Tidak Ditemukan bang !!",
             }),
           ],
         });
     }
   } catch (error) {
-    if (!interaction.replied) {
-      await interaction.editReply(
-        "Terjadi kesalahan saat memproses permintaan.",
-      );
-    }
     console.error("Error handling interaction:", error);
+    if (!interaction.replied) {
+      return await interaction.editReply({
+        embeds: [
+          embedbase({
+            type: "error",
+            message:
+              "Terjadi kesalahan saat memproses permintaan.",
+          }),
+        ]
+      });
+    }
   }
 };
