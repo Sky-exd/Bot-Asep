@@ -27,23 +27,11 @@ export const responses = [
 ];
 
 export const commandsBot = `
-1. **Hallo sep**: Balasan: 'Hallo Juga bang'
-2. **sepi banget nih sep**: Balasan: 'iya nih bang pada kemana ya?'
-3. **p login**: Balasan: 'Gass ken bang gua juga login nih(dalam mimpi)'
-4. **iclik**: Balasan: 'Dilarang berkata kasar, karena admin melihat'
-5. **halo**: Balasan: 'halo juga'
-6. **ingpokan le**: Balasan: 'ingpokan juga bang belajar coding bareng'
-7. **hallo**: Balasan: 'hallo juga, salam kenal gua asep. bot paling ramah disini'
-8. **ingpo mint**: Balasan: 'admint sedang turu, biar gua saja yang menggantikannya'
-9. **ayo coding guys**: Balasan: 'ayo bang gua juga mau ikut'
-10. **asep pake bahasa pemograman apa?**: Balasan: 'mau tau apa mau tau banget nih bang???. malas ah kasih taunya'
-11. **asep on 24jam kah?**: Balasan: 'ya enggak dong, orang pc yang buat asep aja gak 24 jam nyala bagaimana asep mau nyala'
-12. **p**: Balasan: 'singkat sekali p doang'
-13. **/cek role @user**: Menampilkan role pengguna yang ditandai
-14. **/cek perintah**: Menampilkan daftar perintah yang didukung oleh bot
-15. **/kirimtiktok <url>**: untuk mengirim video tiktok
-16. **/translate <teks> <negara>**: untuk menejermahkan bahasa alien yang ada di guild
-17. **/tanyaasep <pertanyaan>**: untuk bertanya kepada asep
+ **/cek role @user**: Menampilkan role pengguna yang ditandai
+ **/cek perintah**: Menampilkan daftar perintah yang didukung oleh bot
+ **/kirimtiktok <url>**: untuk mengirim video tiktok
+ **/translate <teks> <negara>**: untuk menejermahkan bahasa alien yang ada di guild
+ **/tanyaasep <pertanyaan>**: untuk bertanya kepada asep
 `;
 
 export const balesPesan = [
