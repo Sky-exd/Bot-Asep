@@ -23,7 +23,7 @@ const __dirname = dirname(__filename);
     eventsPath: join(__dirname, "events"),
     commandsPath: join(__dirname, "commands"),
     devUserIds: ["1160607274008580126", "587193866831003662"],
-    // bulkRegister: true,
+    bulkRegister: true,
   });
 
   try {

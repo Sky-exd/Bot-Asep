@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export const pemilikbot = "akin";
-
 export const config = {
   token: process.env.TOKEN_DISCORD,
   clientID: process.env.CLIENT_ID,
@@ -29,8 +27,6 @@ export const responses = [
 ];
 
 export const commandsBot = `
-**Daftar Perintah yang Didukung oleh Bot:**
-
 1. **Hallo sep**: Balasan: 'Hallo Juga bang'
 2. **sepi banget nih sep**: Balasan: 'iya nih bang pada kemana ya?'
 3. **p login**: Balasan: 'Gass ken bang gua juga login nih(dalam mimpi)'
@@ -42,10 +38,12 @@ export const commandsBot = `
 9. **ayo coding guys**: Balasan: 'ayo bang gua juga mau ikut'
 10. **asep pake bahasa pemograman apa?**: Balasan: 'mau tau apa mau tau banget nih bang???. malas ah kasih taunya'
 11. **asep on 24jam kah?**: Balasan: 'ya enggak dong, orang pc yang buat asep aja gak 24 jam nyala bagaimana asep mau nyala'
-12. **p**: Balasan: 'singkat sekali.p'
-13. **cek role @user**: Menampilkan role pengguna yang ditandai
-14. **cek gambar <URL>**: Menampilkan gambar dari URL yang diberikan
-15. **cek perintah**: Menampilkan daftar perintah yang didukung oleh bot
+12. **p**: Balasan: 'singkat sekali p doang'
+13. **/cek role @user**: Menampilkan role pengguna yang ditandai
+14. **/cek perintah**: Menampilkan daftar perintah yang didukung oleh bot
+15. **/kirimtiktok <url>**: untuk mengirim video tiktok
+16. **/translate <teks> <negara>**: untuk menejermahkan bahasa alien yang ada di guild
+17. **/tanyaasep <pertanyaan>**: untuk bertanya kepada asep
 `;
 
 export const balesPesan = [
