@@ -7,6 +7,7 @@ import { Downloader } from "@tobyg74/tiktok-api-dl";
 import { statSync, existsSync, unlinkSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import logger from "../../logger.js";
 import embedbase from "../../utils/embeds.js";
 import downloadFile from "../../utils/downloadFile.js";
 
@@ -32,9 +33,11 @@ export const data = {
 export async function run({ interaction }) {
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
+  logger.info(`${interaction.user.tag} meminta video tiktok`);
   const urlTikok = interaction.options.getString("url");
   const tiktokDownloader = await Downloader(urlTikok, { version: "v2" });
   if (tiktokDownloader.status === "error" || typeof tiktokDownloader.result === "undefined") {
+    logger.error(`${interaction.user.tag} memasuukan link tiktok yang salah`);
     return interaction.editReply({
       embeds: [
         embedbase({
@@ -49,12 +52,14 @@ export async function run({ interaction }) {
       const nameFileTemp = `tiktok${Math.ceil(Math.random() * 5000)}_temp.mp4`;
       const tempFile = join(tempDir, nameFileTemp);
       try {
+        logger.info(`Mengunduh video tiktok dari ${interaction.user.tag}`);
         await downloadFile(
           tiktokDownloader.result.video,
           tempFile,
         );
         const size = statSync(tempFile).size
         if (size >= 100 * 1024 * 1024 || size >= 25 * 1024 * 1024 || size < 9) {
+          logger.error(`File terlalu besar atau terlalu kecil`);
           return await interaction.editReply({
             embeds: [embedbase({
               type: "error",
@@ -66,11 +71,13 @@ export async function run({ interaction }) {
           const tiktokVideo = new AttachmentBuilder(tempFile, {
             name: "tiktok-video.mp4",
           });
-          return await interaction.editReply({
+          await interaction.editReply({
             files: [tiktokVideo],
           });
+          logger.success(`Video tiktok dari ${interaction.user.tag} berhasil dikirim`);
         } catch (error) {
           console.error(error);
+          logger.error(`Gagal mengirim video tiktok dari ${urlTikok}`);
           await interaction.editReply({
             embeds: [
               embedbase({
@@ -82,6 +89,7 @@ export async function run({ interaction }) {
         }
       } catch (err) {
         console.error(err);
+        logger.error(`Kesalahan dalam mengunduh video tiktok dari ${urlTikok}`);
         return await interaction
           .editReply({
             embeds: [

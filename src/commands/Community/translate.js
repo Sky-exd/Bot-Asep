@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import { translate, languages, getCode } from "google-translate-api-x";
 import { listISOCountry } from "../../config.js";
+import logger from "../../logger.js";
 import create from "../../utils/embeds.js";
 
 const listBahasa = [];
@@ -39,14 +40,16 @@ export const data = {
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {
-  const kalimat = interaction.options.getString("kalimat");
-  const keBahasa = interaction.options.getString("ke");
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
+  const kalimat = interaction.options.getString("kalimat");
+  const keBahasa = interaction.options.getString("ke");
+  logger.info(`${interaction.user.tag} meminta translate kalimat`);
 
   try {
+    logger.info(`Menerjemahkan kalimat dari ${kalimat} ke ${keBahasa}`);
     const { text, from } = await translate(kalimat, { to: keBahasa });
-    return await interaction.editReply({
+    await interaction.editReply({
       embeds: [
         create({
           type: "info",
@@ -68,7 +71,10 @@ export async function run({ interaction }) {
         }),
       ],
     });
+    logger.success(`Berhasil menerjemahkan kalimat dari ${kalimat} ke ${keBahasa}`);
+    return;
   } catch (err) {
+    logger.error(`${interaction.user.tag} memasukan bahasa yang tidak tersedia`);
     console.error(err);
     await interaction.editReply({
       embeds: [
@@ -80,6 +86,7 @@ export async function run({ interaction }) {
         }),
       ],
     });
+    return;
   }
 }
 

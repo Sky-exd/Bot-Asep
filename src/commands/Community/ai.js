@@ -1,11 +1,12 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, MessageFlags } from "discord.js";
-import { config } from "../../config.js";
 import {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
+import { config } from "../../config.js";
 import create from "../../utils/embeds.js";
+import logger from "../../logger.js";
 
 const GENERATION_CONFIG = {
   temperature: 0.9,
@@ -49,10 +50,12 @@ export const data = {
 }
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction }) => {
-  const pertanyaan = interaction.options.getString("pertanyaan");
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
+  logger.info(`${interaction.user.tag} tanya ke AsepAI`);
+  const pertanyaan = interaction.options.getString("pertanyaan");
   try {
+    logger.info(`Mengirim pertanyaan ke AsepAI`);
     const geminiAI = new GoogleGenerativeAI(config.geminiAPIKey);
     const modelGemini = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
     const chat = modelGemini.startChat({
@@ -62,6 +65,7 @@ export const run = async ({ interaction }) => {
     });
     const result = await chat.sendMessage(pertanyaan);
     if (result.error) {
+      logger.error(`AsepAI Sedang ada yang error!`);
       console.error("Gemini AI ERROR Coba lagi nanti");
       return await interaction.editReply({
         embeds: [
@@ -78,7 +82,9 @@ export const run = async ({ interaction }) => {
       const pesan = respon.substring(i, i + chunkMessageLimit);
       await interaction.followUp({ content: pesan });
     }
+    logger.success(`AsepAI Bwrhasil menjawab pertanyaan`);
   } catch (err) {
+    logger.error(`AsepAI otak nya konslet!`);
     console.error(err);
     return interaction.editReply({
       embeds: [
