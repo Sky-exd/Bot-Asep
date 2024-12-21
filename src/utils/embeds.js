@@ -1,26 +1,18 @@
 const userProfile =
   "https://cdn.discordapp.com/avatars/1315204083996692614/68842a9875a8a6161df490244ed64d7a.webp";
-const EmbedObject = {
-  author: {
-    name: "Asep AI",
-    icon_url: userProfile,
-  },
-  timestamp: new Date().toISOString(),
-  footer: {
-    text: "Asep AI Bot System",
-    icon_url: userProfile,
-  },
-};
-export default function create({ type, message, title, options }) {
-  if (message) {
-    EmbedObject.description = message;
-  }
-  if (title) {
-    EmbedObject.title = title;
-  }
-  if (typeof options === "object" && options !== null) {
-    Object.assign(EmbedObject, options);
-  }
+
+export default function ({ type, message, title, options }) {
+  const EmbedObject = {
+    author: {
+      name: "Asep AI",
+      icon_url: userProfile,
+    },
+    timestamp: new Date().toISOString(),
+    footer: {
+      text: "Asep AI Bot System",
+      icon_url: userProfile,
+    },
+  };
   switch (type.toLowerCase()) {
     case "success":
       EmbedObject.color = 0x6ec207; // #6ec207
@@ -39,6 +31,12 @@ export default function create({ type, message, title, options }) {
       break;
     default:
       throw Error("Error Tipe Gada di data");
+  }
+  if (title) EmbedObject.title = title;
+  if (message) EmbedObject.description = message;
+
+  if (typeof options === "object" && options !== null) {
+    Object.assign(EmbedObject, options);
   }
   return EmbedObject;
 }
