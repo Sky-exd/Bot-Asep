@@ -16,18 +16,19 @@ const client = new Client({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const { token } = config;
 
 (async () => {
   new CommandKit({
     client,
     eventsPath: join(__dirname, "events"),
     commandsPath: join(__dirname, "commands"),
-    devUserIds: ["1160607274008580126", "587193866831003662"],
-    bulkRegister: true,
+    // devUserIds: ["1160607274008580126", "587193866831003662"],
+    // bulkRegister: true,
   });
 
   try {
-    await client.login(config.token);
+    await client.login(token);
     client.user.setPresence({
       activities: [
         {

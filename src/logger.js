@@ -12,5 +12,11 @@ export default class Logger {
   static success(message) {
     console.log(`${warna.green.bold('[SUCCESS]')} ${message}`);
   }
+  static warn(message) {
+    console.log(`${warna.yellow.bold('[WARNING]')} ${message}`);
+  }
+  static debug(message) {
+    console.log(`${warna.magenta.bold('[DEBUG]')} ${message}`);
+  }
 }
 

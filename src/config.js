@@ -1,11 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+const { TOKEN_DISCORD, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, MONGODB_URI } = process.env;
+
 export const config = {
-  token: process.env.TOKEN_DISCORD,
-  clientID: process.env.CLIENT_ID,
-  guildID: process.env.GUILD_ID,
-  geminiAPIKey: process.env.GEMINI_API_KEY,
+  token: TOKEN_DISCORD,
+  clientID: CLIENT_ID,
+  guildID: GUILD_ID,
+  geminiAPIKey: GEMINI_API_KEY,
+  mongodbURI: MONGODB_URI
 };
 
 export const badWords = [
