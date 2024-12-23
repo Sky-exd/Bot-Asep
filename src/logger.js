@@ -18,5 +18,8 @@ export default class Logger {
   static debug(message) {
     console.log(`${warna.magenta.bold('[DEBUG]')} ${message}`);
   }
+  static default(message) {
+    console.log(`${warna.white.bold('[DEFAULT]')} ${message}`);
+  }
 }
 

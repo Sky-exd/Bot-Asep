@@ -16,13 +16,16 @@ const client = new Client({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const { token } = config;
+const { token, guildID } = config;
+
 
 (async () => {
   new CommandKit({
     client,
     eventsPath: join(__dirname, "events"),
     commandsPath: join(__dirname, "commands"),
+    devRoleIds: ["1231653267126095903", "1043103873902051338"],
+    devGuildIds: [guildID],
     // devUserIds: ["1160607274008580126", "587193866831003662"],
     // bulkRegister: true,
   });
@@ -43,3 +46,4 @@ const { token } = config;
     console.log(`Isi Token bot nya !`, err);
   }
 })();
+
