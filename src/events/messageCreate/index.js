@@ -1,4 +1,5 @@
-import { badWords, balesPesan, responses } from "../../config.js";
+import { responses } from "../../config.js";
+import autorespon from "../../models/AutoResponModel.js";
 import banKataModel from "../../models/bankataModel.js";
 
 export default async function (message, client) {
@@ -11,25 +12,35 @@ export default async function (message, client) {
   const msg = message.content.toLowerCase();
 
   // otomatis balas pesan
-  for (const data of balesPesan)
-    if (msg === data.pesan) message.reply(data.balesan);
+  try {
+    const data = await autorespon.findOne({ guildId: guildId });
+    if (!data) return;
+    for (const d of data.autorespon) {
+      const pesan = d.pesan;
+      const balesan = d.balesan;
+      if (msg === pesan) {
+        message.reply(balesan)
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
 
+
+  // ban kata kasar
   try {
     const katakasar = await banKataModel.find({ guildId });
     const kata = katakasar.some(kata => msg.includes(kata.word.toLowerCase()));
     if (kata) {
+      message.delete();
       const randomResponse =
         responses[Math.floor(Math.random() * responses.length)];
-      message.reply(randomResponse);
+      message.channel.send({
+        content: randomResponse,
+      });
     }
 
   } catch (err) {
     console.error("Gagal mengecek kata kasar", err);
   }
-
-  // if (badWords.some((word) => msg.includes(word))) {
-  //   const randomResponse =
-  //     responses[Math.floor(Math.random() * responses.length)];
-  //   message.reply(randomResponse);
-  // }
 }

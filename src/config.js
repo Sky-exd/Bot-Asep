@@ -11,17 +11,6 @@ export const config = {
   mongodbURI: MONGODB_URI
 };
 
-export const badWords = [
-  "Anjing",
-  "iclik",
-  "babi",
-  "memek",
-  "kontol",
-  "ANJING",
-  "4NJING",
-  "4nj",
-];
-
 export const responses = [
   "Jaga bicara, ya!",
   "Kata-kata seperti itu tidak baik.",
@@ -37,53 +26,6 @@ export const commandsBot = `
  **/tanyaasep <pertanyaan>**: untuk bertanya kepada asep
 `;
 
-export const balesPesan = [
-  {
-    pesan: "Hallo sep",
-    balesan: "hallo juga bang",
-  },
-  {
-    pesan: "sepi banget nih sep",
-    balesan: "iya nih bang pada kemana ya?",
-  },
-  {
-    pesan: "p login",
-    balesan: "gass ken bang gua juga login nih(dalam mimpi)",
-  },
-  {
-    pesan: "halo",
-    balesan: "halo juga",
-  },
-  {
-    pesan: "ingpokan le",
-    balesan: "ingpokan juga bang belajar coding bareng",
-  },
-  {
-    pesan: "hallo",
-    balesan: "hallo juga, salam kenal gua asep. bot paling ramah disini",
-  },
-  {
-    pesan: "ingpo mint",
-    balesan: "admint sedang turu, biar gua saja yang menggantikannya",
-  },
-  {
-    pesan: "ayo coding guys",
-    balesan: "ayo bang gua juga mau ikut",
-  },
-  {
-    pesan: "asep pake bahasa pemograman apa?",
-    balesan: "mau tau apa mau tau banget nih bang???. malas ah kasih taunya",
-  },
-  {
-    pesan: "asep on 24jam kah?",
-    balesan:
-      "ya enggak dong, orang pc yang buat asep aja gak 24 jam nyala bagaimana asep mau nyala",
-  },
-  {
-    pesan: "p",
-    balesan: "singkat sekali p doang",
-  },
-];
 export const listISOCountry = {
   ab: "Abkhaz",
   ace: "Acehnese",
