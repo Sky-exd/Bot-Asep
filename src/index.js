@@ -18,7 +18,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const { token, guildID } = config;
 
-
 (async () => {
   new CommandKit({
     client,
@@ -26,7 +25,7 @@ const { token, guildID } = config;
     commandsPath: join(__dirname, "commands"),
     devRoleIds: ["1231653267126095903", "1043103873902051338"],
     devGuildIds: [guildID],
-    // devUserIds: ["1160607274008580126", "587193866831003662"],
+    devUserIds: ["1160607274008580126", "587193866831003662"],
     // bulkRegister: true,
   });
 
@@ -40,10 +39,9 @@ const { token, guildID } = config;
           state: "Asep AI siap melayani!",
         },
       ],
-      status: "online",
+      status: "idle",
     });
   } catch (err) {
     console.log(`Isi Token bot nya !`, err);
   }
 })();
-

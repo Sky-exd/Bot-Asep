@@ -16,6 +16,10 @@ export const responses = [
   "Kata-kata seperti itu tidak baik.",
   "Ayo bicara dengan sopan.",
   "Kurangi kata kasar, ok?",
+  "Jangan toxic, ya!",
+  "Heh! Jangan toxic!",
+  "Kata-kata kasar tidak diperbolehkan.",
+  "KAMU SUDAH DITANDAI!!!"
 ];
 
 export const commandsBot = `

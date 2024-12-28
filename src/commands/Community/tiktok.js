@@ -107,24 +107,18 @@ export async function run({ interaction }) {
       break;
     }
     case "image": {
+      const AttachFiles = []
+      const linkImages = tiktokDownloader.result.images
+      const linkMusic = tiktokDownloader.result.music
+      linkImages.forEach((image, index) => {
+        const nameFileTemp = `tiktok-image${index}.jpg`;
+        AttachFiles.push(new AttachmentBuilder(image, { name: nameFileTemp }))
+      })
+      console.log(linkMusic);
       await interaction.editReply({
-        embeds: [
-          embedbase({
-            type: "info",
-            message: "tiktok gambar belom di dukung bang!",
-          })
-        ]
+        files: AttachFiles
       });
       break;
     }
-    default:
-      return await interaction.editReply({
-        embeds: [
-          embedbase({
-            type: "error",
-            message: "Tipe Video Tidak Ditemukan bang !!",
-          }),
-        ],
-      });
   }
 };
