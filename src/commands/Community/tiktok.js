@@ -114,7 +114,13 @@ export async function run({ interaction }) {
         const nameFileTemp = `tiktok-image${index}.jpg`;
         AttachFiles.push(new AttachmentBuilder(image, { name: nameFileTemp }))
       })
-      console.log(linkMusic);
+      try {
+        downloadFile(linkMusic, join(tempDir, "tiktok-music.mp3"))
+
+      } catch (error) {
+        console.error(error);
+
+      }
       await interaction.editReply({
         files: AttachFiles
       });
