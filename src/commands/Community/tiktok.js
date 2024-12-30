@@ -51,10 +51,12 @@ export async function run({ interaction }) {
     case "video": {
       const nameFileTemp = `tiktok${Math.ceil(Math.random() * 5000)}_temp.mp4`;
       const tempFile = join(tempDir, nameFileTemp);
+      const linkVideo = tiktokDownloader.result.video;
+
       try {
         logger.info(`Mengunduh video tiktok dari ${interaction.user.tag}`);
         await downloadFile(
-          tiktokDownloader.result.video,
+          linkVideo,
           tempFile,
         );
         const size = statSync(tempFile).size
@@ -68,24 +70,24 @@ export async function run({ interaction }) {
           })
         }
         try {
-          const tiktokVideo = new AttachmentBuilder(tempFile, {
-            name: "tiktok-video.mp4",
-          });
+          const tiktokVideo = new AttachmentBuilder(tempFile, { name: 'tiktok-video.mp4' });
+          console.log(tiktokVideo, linkVideo)
           await interaction.editReply({
-            files: [tiktokVideo],
+            content: "chiy",
+            // files: [tiktokVideo],
           });
           logger.success(`Video tiktok dari ${interaction.user.tag} berhasil dikirim`);
         } catch (error) {
           console.error(error);
           logger.error(`Gagal mengirim video tiktok dari ${urlTikok}`);
-          await interaction.editReply({
-            embeds: [
-              embedbase({
-                type: "error",
-                message: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
-              }),
-            ],
-          });
+          // await interaction.editReply({
+          //   embeds: [
+          //     embedbase({
+          //       type: "error",
+          //       message: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
+          //     }),
+          //   ],
+          // });
         }
       } catch (err) {
         console.error(err);
@@ -109,18 +111,11 @@ export async function run({ interaction }) {
     case "image": {
       const AttachFiles = []
       const linkImages = tiktokDownloader.result.images
-      const linkMusic = tiktokDownloader.result.music
+      // const linkMusic = tiktokDownloader.result.music
       linkImages.forEach((image, index) => {
         const nameFileTemp = `tiktok-image${index}.jpg`;
         AttachFiles.push(new AttachmentBuilder(image, { name: nameFileTemp }))
       })
-      try {
-        downloadFile(linkMusic, join(tempDir, "tiktok-music.mp3"))
-
-      } catch (error) {
-        console.error(error);
-
-      }
       await interaction.editReply({
         files: AttachFiles
       });
