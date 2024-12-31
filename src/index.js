@@ -18,6 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const { token, guildID } = config;
 
+
 (async () => {
   new CommandKit({
     client,
@@ -26,9 +27,8 @@ const { token, guildID } = config;
     devRoleIds: ["1231653267126095903", "1043103873902051338"],
     devGuildIds: [guildID],
     devUserIds: ["1160607274008580126", "587193866831003662"],
-    // bulkRegister: true,
+    bulkRegister: true,
   });
-
   try {
     await client.login(token);
     client.user.setPresence({
@@ -39,7 +39,7 @@ const { token, guildID } = config;
           state: "Asep AI siap melayani!",
         },
       ],
-      status: "idle",
+      status: "online",
     });
   } catch (err) {
     console.log(`Isi Token bot nya !`, err);
