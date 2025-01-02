@@ -19,7 +19,6 @@ export const responses = [
   "Jangan toxic, ya!",
   "Heh! Jangan toxic!",
   "Kata-kata kasar tidak diperbolehkan.",
-  "KAMU SUDAH DITANDAI!!!"
 ];
 
 export const commandsBot = `

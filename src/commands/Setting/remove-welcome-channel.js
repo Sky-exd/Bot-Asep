@@ -1,5 +1,8 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChannelType } from "discord.js";
-import WelcomeChannelSchema from "../../models/WelcomeChanel.js";
+import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 export const data = new SlashCommandBuilder()
     .setName("remove-welcome-channel")
@@ -26,7 +29,7 @@ export async function run({ interaction }) {
 
         if (!channelExistsInDb) {
             await interaction.followUp(
-                 'This channel is not set as welcome channel.'
+                'This channel is not set as welcome channel.'
             );
 
             return;
@@ -45,5 +48,5 @@ export async function run({ interaction }) {
 
     } catch (error) {
         console.log(`Error in ${__filename}\n`, error);
-        }
     }
+}

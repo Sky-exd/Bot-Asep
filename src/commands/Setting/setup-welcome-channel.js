@@ -1,16 +1,19 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChannelType } from 'discord.js';
-import WelcomeChannelSchema from '../../models/WelcomeChanel.js';
+import WelcomeChannelSchema from '../../models/WelcomeChannel.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 export const data = new SlashCommandBuilder()
     .setName('setup-welcome-channel')
     .setDescription('Set up a welcome channel for your server.')
-    .addChannelOption((option) => 
+    .addChannelOption((option) =>
         option
             .setName('target-channel')
             .setDescription('Select the channel you want to set as welcome channel.')
             .setRequired(true)
     )
-    .addStringOption((option) => 
+    .addStringOption((option) =>
         option
             .setName('custom-message')
             .setDescription(
@@ -34,7 +37,7 @@ export async function run({ interaction }) {
 
         if (channelExistsInDb) {
             await interaction.editReply({
-                content: 'This channel is already set as welcome channel.',
+                content: 'Channel yang anda masukan sudah ada di database.',
             });
 
             return;
@@ -56,7 +59,7 @@ export async function run({ interaction }) {
                 interaction.followUp('Database error. Please try again later.');
                 console.log(`DB error in ${__filename}\n`, error);
             });
-            
+
     } catch (error) {
         console.log(`Error in ${__filename}\n`, error);
     }

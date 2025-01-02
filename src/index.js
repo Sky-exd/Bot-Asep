@@ -16,8 +16,8 @@ const client = new Client({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const { token, guildID } = config;
 
+const { token, guildID } = config;
 
 (async () => {
   new CommandKit({
@@ -30,19 +30,6 @@ const { token, guildID } = config;
     bulkRegister: true,
   });
   try {
-    //ketika member masuk
-  client.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
-    if (!channel) return;
-    channel.send('selamat datang di server, ${member}!');
-  });
-
-  //ketika member keluar
-  client.on('guildMemberRemove', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'goodbye');
-    if (!channel) return;
-    channel.send('Selamat tinggal, ${member.displayName}. Kami akan menunggu mu kembali!');
-  });
     await client.login(token);
     client.user.setPresence({
       activities: [
@@ -52,11 +39,7 @@ const { token, guildID } = config;
           state: "Asep AI siap melayani!",
         },
       ],
-<<<<<<< HEAD
-      status: "online",
-=======
       status: "Online",
->>>>>>> refs/remotes/origin/master
     });
   } catch (err) {
     console.log(`Isi Token bot nya !`, err);
