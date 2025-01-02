@@ -252,7 +252,7 @@ export default class WelcomeLeave {
 
     ctx.beginPath();
     ctx.globalAlpha = this.overlay_opacity;
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = "#181C14";
     ctx.moveTo(75, 45);
     ctx.lineTo(canvas.width - 75, 45);
     ctx.quadraticCurveTo(canvas.width - 45, 45, canvas.width - 45, 75);

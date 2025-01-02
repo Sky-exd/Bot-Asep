@@ -27,7 +27,7 @@ const { token, guildID } = config;
     devRoleIds: ["1231653267126095903", "1043103873902051338"],
     devGuildIds: [guildID],
     devUserIds: ["1160607274008580126", "587193866831003662"],
-    bulkRegister: true,
+    //bulkRegister: true,
   });
   try {
     await client.login(token);

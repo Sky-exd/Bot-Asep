@@ -45,10 +45,11 @@ export default async function (guildMember) {
 
       const customMessage =
         welcomeConfig.customMessage ||
-        "Hello {mention-member}, welcome to {server-name}!";
+        "Hello {display-member}, welcome to {server-name}!";
 
       const welcomeMessage = customMessage
         .replace("{mention-member}", `<@${guildMember.id}>`)
+        .replace("{display-name}", guildMember.user.displayName)
         .replace("{username}", guildMember.user.username)
         .replace("{server-name}", guildMember.guild.name);
 
@@ -61,16 +62,16 @@ export default async function (guildMember) {
         )
         .setBackground("image", bannerWelcome)
         .setTitle("Selamat Datang")
-        .setDescription(welcomeMessage, "#ffffff")
-        .setBorder("#2a2e35")
-        .setAvatarBorder("#2a2e35")
-        .setOverlayOpacity(0.1)
+        .setDescription(welcomeMessage, "#FBFBFB")
+        .setAvatarBorder("#3C3D37")
+        .setOverlayOpacity(0.5)
         .build();
 
       const attachment = new AttachmentBuilder(WelcomeCanvas, {
         name: `welcome-${guildMember.id}.png`,
       });
       targetChannel.send({
+        content: `Halo ${guildMember.user.username}!, Semoga Betah di Server ${guildMember.guild.name}!`,
         files: [attachment],
       });
     }
