@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, roleMention } from "discord.js";
+import { SlashCommandBuilder, roleMention, bold } from "discord.js";
 import { commandsBot } from "../../config.js";
 import embedBase from "../../utils/embeds.js";
 
@@ -56,16 +56,16 @@ export const run = async ({ interaction }) => {
       const role = memberGuild.roles.cache
         .filter((role) => role.name !== "@everyone")
         .map((role) => roleMention(role.id))
-        .join(",  ");
+        .join(" - ");
       await interaction.editReply({
         embeds: [
           embedBase({
             type: "info",
-            title: `Role untuk **${user.displayName}**`,
+            title: `Role untuk ${bold(user.displayName)}`,
             message: `${role}`,
             options: {
               author: {
-                name: `${user.globalName}`,
+                name: `${user.username}`,
                 icon_url: user.displayAvatarURL({ dynamic: true }),
               },
             },
