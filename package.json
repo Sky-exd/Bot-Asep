@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon --ext js,ts,json ./src/index.js",
+    "dev": "npx nodemon --ext ts,js,json ./src/index.js",
     "start": "node ./src/index.js"
   },
   "author": "Soraexd",

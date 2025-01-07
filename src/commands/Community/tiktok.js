@@ -81,14 +81,6 @@ export async function run({ interaction }) {
         } catch (error) {
           console.error(error);
           logger.error(`Gagal mengirim video tiktok dari ${urlTikok}`);
-          // await interaction.editReply({
-          //   embeds: [
-          //     embedbase({
-          //       type: "error",
-          //       message: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
-          //     }),
-          //   ],
-          // });
         }
       } catch (err) {
         console.error(err);
@@ -110,16 +102,20 @@ export async function run({ interaction }) {
       break;
     }
     case "image": {
-      const AttachFiles = [];
       const linkImages = tiktokDownloader.result.images;
-      // const linkMusic = tiktokDownloader.result.music
-      linkImages.forEach((image, index) => {
-        const nameFileTemp = `tiktokImage-${index}.jpg`;
-        AttachFiles.push(new AttachmentBuilder(image, { name: nameFileTemp }));
-      });
-      await interaction.editReply({
-        files: AttachFiles,
-      });
+      const linkMusic = tiktokDownloader.result.music;
+      const batchSize = 10;
+      for (let i = 0; i < linkImages.length; i += batchSize) {
+        const batch = linkImages.slice(i, i + batchSize);
+        const attachments = batch.map((file) => {
+          return new AttachmentBuilder(file, { name: `tiktokImage${i}.jpg` });
+        });
+        if (attachments.length > 0) {
+          await interaction.followUp({
+            files: attachments,
+          });
+        }
+      }
       break;
     }
   }

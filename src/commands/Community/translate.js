@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+} from "discord.js";
 import { translate, languages, getCode } from "google-translate-api-x";
 import { listISOCountry } from "../../config.js";
 import logger from "../../logger.js";
@@ -26,17 +29,17 @@ export const data = {
       name: "kalimat",
       description: "Kalimat yang mau di translate",
       type: ApplicationCommandOptionType.String,
-      required: true
+      required: true,
     },
     {
       name: "ke",
       description: "Ke Bahasa apa ?",
       type: ApplicationCommandOptionType.String,
       required: true,
-      autocomplete: true
-    }
-  ]
-}
+      autocomplete: true,
+    },
+  ],
+};
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {
@@ -67,14 +70,18 @@ export async function run({ interaction }) {
                 inline: true,
               },
             ],
-          }
+          },
         }),
       ],
     });
-    logger.success(`Berhasil menerjemahkan kalimat dari ${kalimat} ke ${keBahasa}`);
+    logger.success(
+      `Berhasil menerjemahkan kalimat dari ${kalimat} ke ${keBahasa}`,
+    );
     return;
   } catch (err) {
-    logger.error(`${interaction.user.tag} memasukan bahasa yang tidak tersedia`);
+    logger.error(
+      `${interaction.user.tag} memasukan bahasa yang tidak tersedia`,
+    );
     console.error(err);
     await interaction.editReply({
       embeds: [
