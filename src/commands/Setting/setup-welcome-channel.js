@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   PermissionFlagsBits,
   ChannelType,
+  MessageFlags,
 } from "discord.js";
 import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
 import { fileURLToPath } from "url";
@@ -11,7 +12,6 @@ const __filename = fileURLToPath(import.meta.url);
 export const data = new SlashCommandBuilder()
   .setName("setup-welcome-channel")
   .setDescription("Set up a welcome channel for your server.")
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addChannelOption((option) =>
     option
       .setName("target-channel")
@@ -28,7 +28,9 @@ export const data = new SlashCommandBuilder()
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {
   try {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({
+      flags: MessageFlags.Ephemeral,
+    });
 
     const targetChannel = interaction.options.getChannel("target-channel");
     const customMessage = interaction.options.getString("custom-message");
@@ -43,6 +45,7 @@ export async function run({ interaction }) {
     if (channelExistsInDb) {
       await interaction.editReply({
         content: "Channel yang anda masukan sudah ada di database.",
+        flags: MessageFlags.Ephemeral,
       });
 
       return;
@@ -53,16 +56,25 @@ export async function run({ interaction }) {
       customMessage,
     });
 
-    newWelcomeChannel
-      .save()
-      .then(() => {
-        interaction.followUp(`Set ${targetChannel} as welcome channel.`);
-      })
-      .catch((error) => {
-        interaction.followUp("Database error. Please try again later.");
-        console.log(`DB error in ${__filename}\n`, error);
+    try {
+      await newWelcomeChannel.save();
+      await interaction.followUp({
+        content: `Set ${targetChannel} as welcome channel.`,
+        flags: MessageFlags.Ephemeral,
       });
+    } catch (error) {
+      await interaction.followUp({
+        content: "Database error. Please try again later.",
+        flags: MessageFlags.Ephemeral,
+      });
+      console.log(`DB error in ${__filename}\n`, error);
+    }
   } catch (error) {
     console.log(`Error in ${__filename}\n`, error);
   }
 }
+
+/** @type {import('commandkit').CommandOptions} */
+export const options = {
+  userPermissions: ["Administrator", "ManageRoles"],
+};

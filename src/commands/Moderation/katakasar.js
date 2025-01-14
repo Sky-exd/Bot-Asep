@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder, spoiler } from "discord.js";
+import { SlashCommandBuilder, spoiler } from "discord.js";
 import banKataModel from "../../models/bankataModel.js";
 import embedBase from "../../utils/embeds.js";
 
@@ -139,5 +139,5 @@ export const run = async ({ interaction }) => {
 
 /** @type {import('commandkit').CommandOptions} */
 export const options = {
-  devOnly: true,
+  userPermissions: ["Administrator", "ManageRoles"],
 };
