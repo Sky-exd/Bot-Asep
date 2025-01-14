@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { createWriteStream } from 'fs';
+import axios from "axios";
+import { createWriteStream } from "fs";
 
 const downloadFile = async (urlVideo, dest) => {
   let file = createWriteStream(dest);

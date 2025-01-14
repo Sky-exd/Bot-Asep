@@ -1,14 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const { TOKEN_DISCORD, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, MONGODB_URI } = process.env;
+const { TOKEN_DISCORD, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, MONGODB_URI } =
+  process.env;
 
 export const config = {
   token: TOKEN_DISCORD,
   clientID: CLIENT_ID,
   guildID: GUILD_ID,
   geminiAPIKey: GEMINI_API_KEY,
-  mongodbURI: MONGODB_URI
+  mongodbURI: MONGODB_URI,
 };
 
 export const responses = [
@@ -19,7 +20,6 @@ export const responses = [
   "Jangan toxic, ya!",
   "Heh! Jangan toxic!",
   "Kata-kata kasar tidak diperbolehkan.",
-  "KAMU SUDAH DITANDAI!!!"
 ];
 
 export const commandsBot = `

@@ -1,6 +1,6 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import banKataModel from '../../models/bankataModel.js';
-import embedBase from '../../utils/embeds.js';
+import { EmbedBuilder, SlashCommandBuilder, spoiler } from "discord.js";
+import banKataModel from "../../models/bankataModel.js";
+import embedBase from "../../utils/embeds.js";
 
 export const data = new SlashCommandBuilder()
   .setName("bankata")
@@ -33,7 +33,6 @@ export const data = new SlashCommandBuilder()
       ),
   );
 
-
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction }) => {
   const subcommand = interaction.options.getSubcommand();
@@ -50,9 +49,9 @@ export const run = async ({ interaction }) => {
             embeds: [
               embedBase({
                 type: "error",
-                title: `Kata ||${kataBan}|| sudah di ban`,
-              })
-            ]
+                title: `Kata ${spoiler(kataBan)} sudah di ban`,
+              }),
+            ],
           });
         }
         const banKataBaru = new banKataModel({ guildId, word: kataBan });
@@ -61,9 +60,9 @@ export const run = async ({ interaction }) => {
           embeds: [
             embedBase({
               type: "info",
-              title: `Kata ||${kataBan}|| berhasil di ban`,
-            })
-          ]
+              title: `Kata ${spoiler(kataBan)} berhasil di ban`,
+            }),
+          ],
         });
       } catch (error) {
         console.error("Error cek kata", error);
@@ -79,22 +78,22 @@ export const run = async ({ interaction }) => {
             embeds: [
               embedBase({
                 type: "error",
-                title: "Belum ada kata yang diban di server ini"
-              })
-            ]
+                title: "Belum ada kata yang diban di server ini",
+              }),
+            ],
           });
         }
         const wordList = bannedWords
-          .map((wordObj) => `||${wordObj.word}||`)
+          .map((wordObj) => `${spoiler(wordObj.word)}`)
           .join(", ");
         await interaction.editReply({
           embeds: [
             embedBase({
               type: "info",
               title: "List kata yang diban di guild ini!!",
-              message: wordList
-            })
-          ]
+              message: wordList,
+            }),
+          ],
         });
       } catch (error) {
         console.error("Gagal men-list kata yang di ban", error);
@@ -114,9 +113,9 @@ export const run = async ({ interaction }) => {
             embeds: [
               embedBase({
                 type: "error",
-                title: `Kata ||${kataApus}|| tidak ada di list ban`
-              })
-            ]
+                title: `Kata ${spoiler(kataApus)} tidak ada di list ban`,
+              }),
+            ],
           });
         }
         await banKataModel.deleteOne({ guildId, word: kataApus });
@@ -124,9 +123,9 @@ export const run = async ({ interaction }) => {
           embeds: [
             embedBase({
               type: "info",
-              title: `Kata ||${kataApus}|| berhasil di hapus`
-            })
-          ]
+              title: `Kata ${spoiler(kataApus)} berhasil di hapus`,
+            }),
+          ],
         });
       } catch (err) {
         console.error(err);
@@ -140,5 +139,5 @@ export const run = async ({ interaction }) => {
 
 /** @type {import('commandkit').CommandOptions} */
 export const options = {
-  devOnly: true
+  devOnly: true,
 };

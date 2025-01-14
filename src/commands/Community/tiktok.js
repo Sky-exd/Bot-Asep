@@ -15,6 +15,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const tempDir = join(__dirname, "../../../temp");
 
+// Fungsi untuk memvalidasi URL TikTok
+function isValidTikTokUrl(url) {
+  const TiktokURLregex =
+    /https:\/\/(?:m|www|vm|vt|lite)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video|photo)\/|\?shareId=|\&item_id=)(\d+))|\w+)/;
+  return TiktokURLregex.test(url);
+}
+
 /** @type {import('commandkit').CommandData} */
 export const data = {
   name: "kirimtiktok",
@@ -23,108 +30,168 @@ export const data = {
   options: [
     {
       name: "url",
-      description: "https://vt.tiktok.com/ZSjMk4GRw/",
+      description:
+        "Masukkan URL TikTok (contoh: https://vt.tiktok.com/ZSjMk4GRw/)",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
   ],
 };
+
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {
-  if (!interaction.deferred && !interaction.replied)
+  if (!interaction.deferred && !interaction.replied) {
     await interaction.deferReply();
-  logger.info(`${interaction.user.tag} meminta video tiktok`);
-  const urlTikok = interaction.options.getString("url");
-  const tiktokDownloader = await Downloader(urlTikok, { version: "v2" });
-  if (tiktokDownloader.status === "error" || typeof tiktokDownloader.result === "undefined") {
-    logger.error(`${interaction.user.tag} memasuukan link tiktok yang salah`);
+  }
+
+  const urlTikTok = interaction.options.getString("url");
+
+  // Validasi URL TikTok
+  if (!isValidTikTokUrl(urlTikTok)) {
+    logger.error(
+      `${interaction.user.tag} memasukkan link TikTok yang tidak valid`,
+    );
     return interaction.editReply({
       embeds: [
         embedbase({
           type: "error",
-          message: "Link Tiktok ada yang salah bang !",
+          message:
+            "Link TikTok tidak valid! Pastikan link yang dimasukkan benar.",
         }),
       ],
     });
   }
-  switch (tiktokDownloader.result.type) {
-    case "video": {
-      const nameFileTemp = `tiktok${Math.ceil(Math.random() * 5000)}_temp.mp4`;
-      const tempFile = join(tempDir, nameFileTemp);
-      try {
-        logger.info(`Mengunduh video tiktok dari ${interaction.user.tag}`);
-        await downloadFile(
-          tiktokDownloader.result.video,
-          tempFile,
-        );
-        const size = statSync(tempFile).size
-        if (size >= 100 * 1024 * 1024 || size >= 25 * 1024 * 1024 || size < 9) {
-          logger.error(`File terlalu besar atau terlalu kecil`);
-          return await interaction.editReply({
-            embeds: [embedbase({
-              type: "error",
-              message: "File nya terlalu besar tidak bisa dikirim!!"
-            })]
-          })
-        }
+
+  logger.info(`${interaction.user.tag} meminta video TikTok`);
+
+  try {
+    const tiktokDownloader = await Downloader(urlTikTok, { version: "v2" });
+
+    if (tiktokDownloader.status === "error" || !tiktokDownloader.result) {
+      logger.error(`${interaction.user.tag} memasukkan link TikTok yang salah`);
+      return interaction.editReply({
+        embeds: [
+          embedbase({
+            type: "error",
+            message:
+              "Link TikTok tidak valid atau terjadi kesalahan saat memproses!",
+          }),
+        ],
+      });
+    }
+
+    const result = tiktokDownloader.result;
+
+    switch (result.type) {
+      case "video": {
+        const nameFileTemp = `tiktok_${Date.now()}_${Math.floor(Math.random() * 1000)}.mp4`;
+        const tempFile = join(tempDir, nameFileTemp);
+
         try {
+          logger.info(`Mengunduh video TikTok dari ${interaction.user.tag}`);
+          await downloadFile(result.video, tempFile);
+
+          const size = statSync(tempFile).size;
+
+          // Batasan ukuran file: 100MB (Discord memiliki batasan 25MB untuk file biasa)
+          if (size >= 100 * 1024 * 1024 || size < 1024) {
+            logger.error(`File terlalu besar atau terlalu kecil`);
+            return interaction.editReply({
+              embeds: [
+                embedbase({
+                  type: "error",
+                  message:
+                    "File terlalu besar (maksimal 100MB) atau terlalu kecil!",
+                }),
+              ],
+            });
+          }
+
           const tiktokVideo = new AttachmentBuilder(tempFile, {
-            name: "tiktok-video.mp4",
+            name: "tiktokVideo.mp4",
           });
+
           await interaction.editReply({
             files: [tiktokVideo],
           });
-          logger.success(`Video tiktok dari ${interaction.user.tag} berhasil dikirim`);
         } catch (error) {
-          console.error(error);
-          logger.error(`Gagal mengirim video tiktok dari ${urlTikok}`);
+          logger.error(
+            `Gagal mengunduh atau mengirim video TikTok: ${error.message}`,
+          );
           await interaction.editReply({
             embeds: [
               embedbase({
                 type: "error",
-                message: "Tiktok Gagal Di Kirim Bang! Coba lagi nanti!",
+                message: "Gagal mengunduh atau mengirim video TikTok!",
+              }),
+            ],
+          });
+        } finally {
+          // Pastikan file sementara dihapus setelah selesai
+          if (existsSync(tempFile)) {
+            unlinkSync(tempFile);
+          }
+        }
+        break;
+      }
+
+      case "image": {
+        const linkImages = result.images;
+        const batchSize = 10; // Discord membatasi 10 file per pesan
+
+        try {
+          for (let i = 0; i < linkImages.length; i += batchSize) {
+            const batch = linkImages.slice(i, i + batchSize);
+            const attachments = batch.map((file, index) => {
+              return new AttachmentBuilder(file, {
+                name: `tiktokImage_${i + index}.jpg`,
+              });
+            });
+
+            if (attachments.length > 0) {
+              await interaction.followUp({
+                files: attachments,
+              });
+            }
+          }
+        } catch (error) {
+          logger.error(`Gagal mengirim gambar TikTok: ${error.message}`);
+          await interaction.followUp({
+            embeds: [
+              embedbase({
+                type: "error",
+                message: "Gagal mengirim gambar TikTok!",
               }),
             ],
           });
         }
-      } catch (err) {
-        console.error(err);
-        logger.error(`Kesalahan dalam mengunduh video tiktok dari ${urlTikok}`);
-        return await interaction
-          .editReply({
-            embeds: [
-              embedbase({
-                type: "error",
-                message: "Ada yang salah sama download file nya",
-              }),
-            ],
-          })
-      } finally {
-        setTimeout(() => {
-          if (existsSync(tempFile)) unlinkSync(tempFile);
-        }, 3000);
+        break;
       }
-      break;
-    }
-    case "image": {
-      const AttachFiles = []
-      const linkImages = tiktokDownloader.result.images
-      const linkMusic = tiktokDownloader.result.music
-      linkImages.forEach((image, index) => {
-        const nameFileTemp = `tiktok-image${index}.jpg`;
-        AttachFiles.push(new AttachmentBuilder(image, { name: nameFileTemp }))
-      })
-      try {
-        downloadFile(linkMusic, join(tempDir, "tiktok-music.mp3"))
 
-      } catch (error) {
-        console.error(error);
-
+      default: {
+        logger.error(`Tipe konten TikTok tidak dikenali: ${result.type}`);
+        await interaction.editReply({
+          embeds: [
+            embedbase({
+              type: "error",
+              message: "Tipe konten TikTok tidak dikenali!",
+            }),
+          ],
+        });
+        break;
       }
-      await interaction.editReply({
-        files: AttachFiles
-      });
-      break;
     }
+  } catch (error) {
+    logger.error(
+      `Terjadi kesalahan saat memproses permintaan TikTok: ${error.message}`,
+    );
+    await interaction.editReply({
+      embeds: [
+        embedbase({
+          type: "error",
+          message: "Terjadi kesalahan saat memproses permintaan TikTok!",
+        }),
+      ],
+    });
   }
-};
+}
