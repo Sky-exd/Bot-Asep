@@ -14,6 +14,7 @@
     "@google/generative-ai": "^0.21.0",
     "@tobyg74/tiktok-api-dl": "^1.2.2",
     "axios": "^1.7.7",
+    "canvas": "^3.0.1",
     "commandkit": "^0.1.10",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",

@@ -1,4 +1,10 @@
-import { Client, GatewayIntentBits, ActivityType, Partials } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  ActivityType,
+  Partials,
+  AttachmentBuilder,
+} from "discord.js";
 import { CommandKit } from "commandkit";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -30,19 +36,6 @@ const { token, guildID } = config;
   });
 
   try {
-    //ketika member masuk
-  client.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
-    if (!channel) return;
-    channel.send('selamat datang di server, ${member}!');
-  });
-
-  //ketika member keluar
-  client.on('guildMemberRemove', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'goodbye');
-    if (!channel) return;
-    channel.send('Selamat tinggal, ${member.displayName}. Kami akan menunggu mu kembali!');
-  });
     await client.login(token);
     client.user.setPresence({
       activities: [
