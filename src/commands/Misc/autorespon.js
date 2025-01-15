@@ -13,14 +13,14 @@ export const data = new SlashCommandBuilder()
         option
           .setName("pesan")
           .setDescription("Pesan yang akan dibalas")
-          .setRequired(true)
+          .setRequired(true),
       )
       .addStringOption((option) =>
         option
           .setName("balesan")
           .setDescription("Pesan balasan")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -30,18 +30,18 @@ export const data = new SlashCommandBuilder()
         option
           .setName("pesan")
           .setDescription("Pesan yang akan dibalas")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("hapus-semua")
-      .setDescription("Hapus semua pesan yang akan dibalas otomatis")
+      .setDescription("Hapus semua pesan yang akan dibalas otomatis"),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("list")
-      .setDescription("List pesan apa saja yang dibales otomatis")
+      .setDescription("List pesan apa saja yang dibales otomatis"),
   );
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
@@ -95,7 +95,7 @@ export const run = async ({ interaction }) => {
         };
         await autorespon.findOneAndUpdate(
           { guildId: interaction.guild.id },
-          { $push: { autorespon: addto } }
+          { $push: { autorespon: addto } },
         );
         await interaction.editReply({
           embeds: [
@@ -128,7 +128,7 @@ export const run = async ({ interaction }) => {
       } else {
         await autorespon.findOneAndUpdate(
           { guildId: interaction.guild.id },
-          { $pull: { autorespon: { pesan: pesan } } }
+          { $pull: { autorespon: { pesan: pesan } } },
         );
         await interaction.editReply({
           embeds: [
@@ -187,5 +187,5 @@ export const run = async ({ interaction }) => {
 };
 
 export const options = {
-  devOnly: true,
+  userPermissions: ["Administrator", "ManageRoles"],
 };

@@ -8,10 +8,10 @@ export const data = {
 export const run = async ({ interaction, handler }) => {
   await interaction.deferReply();
   await handler.reloadCommands();
-  interaction.followUp("Terimkasih telah menghubungi asep ... !");
+  await interaction.followUp({
+    content: "Terimkasih telah menghubungi asep ... !",
+  });
 };
 
 /** @type {import('commandkit').CommandOptions} */
-export const options = {
-  userPermissions: ["Administrator"],
-};
+export const options = {};

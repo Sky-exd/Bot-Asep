@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon --ext ts,js,json ./src/index.js",
+    "dev": "npx nodemon ./src/index.js",
     "start": "node ./src/index.js"
   },
   "author": "Soraexd",
@@ -27,7 +27,9 @@
     "eslint": "^9.16.0",
     "git-cz": "^4.9.0",
     "globals": "^15.13.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "pino": "^7.0.0-rc.9",
+    "pino-pretty": "^13.0.0"
   },
   "config": {
     "commitizen": {

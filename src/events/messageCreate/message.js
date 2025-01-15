@@ -1,6 +1,7 @@
 import { responses } from "../../config.js";
 import autorespon from "../../models/AutoResponModel.js";
 import banKataModel from "../../models/bankataModel.js";
+import { logger } from "../../logger.js";
 
 export default async function (message, client) {
   if (message.author.bot) return;
@@ -17,18 +18,19 @@ export default async function (message, client) {
       const pesan = data.pesan;
       const balesan = data.balesan;
       if (msg === pesan) {
-        message.reply(balesan)
+        message.reply(balesan);
       }
     }
   } catch (error) {
-    console.error(error)
+    logger.error(error, "Gagal dalam merespon pesan otomatis");
   }
-
 
   // ban kata kasar
   try {
     const katakasar = await banKataModel.find({ guildId });
-    const kata = katakasar.some(kata => msg.includes(kata.word.toLowerCase()));
+    const kata = katakasar.some((kata) =>
+      msg.includes(kata.word.toLowerCase()),
+    );
     if (kata) {
       message.delete();
       const randomResponse =
@@ -37,8 +39,7 @@ export default async function (message, client) {
         content: randomResponse,
       });
     }
-
   } catch (err) {
-    console.error("Gagal mengecek kata kasar", err);
+    logger.error(err, "Gagal dalam mengecek kata kasar!");
   }
 }

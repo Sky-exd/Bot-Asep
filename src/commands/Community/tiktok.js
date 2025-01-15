@@ -7,7 +7,7 @@ import { Downloader } from "@tobyg74/tiktok-api-dl";
 import { statSync, existsSync, unlinkSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import logger from "../../logger.js";
+import { logger } from "../../logger.js";
 import embedbase from "../../utils/embeds.js";
 import downloadFile from "../../utils/downloadFile.js";
 
@@ -62,14 +62,14 @@ export async function run({ interaction }) {
     });
   }
 
-  logger.info(`${interaction.user.tag} meminta video TikTok`);
+  logger.info(`${interaction.user.tag} mengirim sebuah link tiktok`);
 
   try {
     const tiktokDownloader = await Downloader(urlTikTok, { version: "v2" });
 
     if (tiktokDownloader.status === "error" || !tiktokDownloader.result) {
       logger.error(`${interaction.user.tag} memasukkan link TikTok yang salah`);
-      return interaction.editReply({
+      await interaction.editReply({
         embeds: [
           embedbase({
             type: "error",
@@ -78,6 +78,7 @@ export async function run({ interaction }) {
           }),
         ],
       });
+      return;
     }
 
     const result = tiktokDownloader.result;
@@ -93,10 +94,9 @@ export async function run({ interaction }) {
 
           const size = statSync(tempFile).size;
 
-          // Batasan ukuran file: 100MB (Discord memiliki batasan 25MB untuk file biasa)
           if (size >= 100 * 1024 * 1024 || size < 1024) {
             logger.error(`File terlalu besar atau terlalu kecil`);
-            return interaction.editReply({
+            await interaction.editReply({
               embeds: [
                 embedbase({
                   type: "error",
@@ -105,6 +105,8 @@ export async function run({ interaction }) {
                 }),
               ],
             });
+            logger.error("File Terlalu Besar Gagal di proses");
+            return;
           }
 
           const tiktokVideo = new AttachmentBuilder(tempFile, {
@@ -114,8 +116,10 @@ export async function run({ interaction }) {
           await interaction.editReply({
             files: [tiktokVideo],
           });
+          logger.info(`Berhasil mengirim video tiktok!`);
         } catch (error) {
           logger.error(
+            error,
             `Gagal mengunduh atau mengirim video TikTok: ${error.message}`,
           );
           await interaction.editReply({
@@ -127,7 +131,6 @@ export async function run({ interaction }) {
             ],
           });
         } finally {
-          // Pastikan file sementara dihapus setelah selesai
           if (existsSync(tempFile)) {
             unlinkSync(tempFile);
           }
@@ -136,8 +139,9 @@ export async function run({ interaction }) {
       }
 
       case "image": {
+        logger.info("Memperoses Tiktok Gambar");
         const linkImages = result.images;
-        const batchSize = 10; // Discord membatasi 10 file per pesan
+        const batchSize = 10;
 
         try {
           for (let i = 0; i < linkImages.length; i += batchSize) {
@@ -148,6 +152,7 @@ export async function run({ interaction }) {
               });
             });
 
+            logger.info("Mengirim tiktok gambar");
             if (attachments.length > 0) {
               await interaction.followUp({
                 files: attachments,
@@ -155,7 +160,7 @@ export async function run({ interaction }) {
             }
           }
         } catch (error) {
-          logger.error(`Gagal mengirim gambar TikTok: ${error.message}`);
+          logger.error(error, `Gagal mengirim gambar TikTok`);
           await interaction.followUp({
             embeds: [
               embedbase({
@@ -182,9 +187,7 @@ export async function run({ interaction }) {
       }
     }
   } catch (error) {
-    logger.error(
-      `Terjadi kesalahan saat memproses permintaan TikTok: ${error.message}`,
-    );
+    logger.error(error, `Terjadi kesalahan saat memproses permintaan TikTok`);
     await interaction.editReply({
       embeds: [
         embedbase({

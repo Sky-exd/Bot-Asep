@@ -1,29 +1,32 @@
 import {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-  ChannelType,
   MessageFlags,
+  ApplicationCommandType,
+  ApplicationCommandOptionType,
 } from "discord.js";
 import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 
-export const data = new SlashCommandBuilder()
-  .setName("setup-welcome-channel")
-  .setDescription("Set up a welcome channel for your server.")
-  .addChannelOption((option) =>
-    option
-      .setName("target-channel")
-      .setDescription("Select the channel you want to set as welcome channel.")
-      .addChannelTypes(ChannelType.GuildAnnouncement)
-      .setRequired(true),
-  )
-  .addStringOption((option) =>
-    option
-      .setName("custom-message")
-      .setDescription("Set a custom welcome message."),
-  );
+/** @type {import('commandkit').CommandData} */
+export const data = {
+  name: "setup-welcome-channel",
+  description: "Set up Welcome Channel untuk seever ini",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "target-channel",
+      description: "Pilih channel buat di set up jadi Welcome Channel",
+      type: ApplicationCommandOptionType.Channel,
+      required: true,
+    },
+    {
+      name: "custom-message",
+      description: "Pesan Custom untuk Welcome Channel",
+      type: ApplicationCommandOptionType.String,
+    },
+  ],
+};
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export async function run({ interaction }) {

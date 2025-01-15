@@ -4,7 +4,7 @@ import {
 } from "discord.js";
 import { translate, languages, getCode } from "google-translate-api-x";
 import { listISOCountry } from "../../config.js";
-import logger from "../../logger.js";
+import { logger } from "../../logger.js";
 import create from "../../utils/embeds.js";
 
 const listBahasa = [];
@@ -74,7 +74,7 @@ export async function run({ interaction }) {
         }),
       ],
     });
-    logger.success(
+    logger.info(
       `Berhasil menerjemahkan kalimat dari ${kalimat} ke ${keBahasa}`,
     );
     return;

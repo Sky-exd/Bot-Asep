@@ -1,53 +1,57 @@
 import {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-  ChannelType,
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  MessageFlags,
 } from "discord.js";
 import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
-import { fileURLToPath } from "url";
+import { logger } from "../../logger.js";
 
-const __filename = fileURLToPath(import.meta.url);
-
-export const data = new SlashCommandBuilder()
-  .setName("remove-welcome-channel")
-  .setDescription("Remove the welcome channel from the server.")
-  .addChannelOption((option) =>
-    option
-      .setName("target-channel")
-      .setDescription(
-        "Select the channel you want to remove as welcome channel.",
-      )
-      .setRequired(true),
-  );
+/** @type {import('commandkit').CommandData} */
+export const data = {
+  name: "remove-welcome-channel",
+  description: "Hapus welcome channel dari server",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "target-channel",
+      description: "Pilih channel mana yang mau di hapus dari WelcomeChannel",
+      type: ApplicationCommandOptionType.Channel,
+      required: true,
+    },
+  ],
+};
 
 export async function run({ interaction }) {
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+  const targetChannel = interaction.options.getChannel("target-channel");
+
+  const query = {
+    guildId: interaction.guildId,
+    channelId: targetChannel.id,
+  };
+
+  const channelExistsInDb = await WelcomeChannelSchema.exists(query);
+
+  if (!channelExistsInDb) {
+    await interaction.followUp({
+      content: "This channel is not set as welcome channel.",
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
+
   try {
-    const targetChannel = interaction.options.getChannel("target-channel");
-
-    await interaction.deferReply({ ephemeral: true });
-
-    const query = {
-      guildId: interaction.guildId,
-      channelId: targetChannel.id,
-    };
-
-    const channelExistsInDb = await WelcomeChannelSchema.exists(query);
-
-    if (!channelExistsInDb) {
-      await interaction.followUp("This channel is not set as welcome channel.");
-
-      return;
-    }
-
-    WelcomeChannelSchema.findOneAndDelete(query)
-      .then(() => {
-        interaction.followUp(`Removed ${targetChannel} as welcome channel.`);
-      })
-      .catch((error) => {
-        interaction.followUp("Database error. Please try again later.");
-        console.log(`DB error in ${__filename}\n`, error);
-      });
+    await WelcomeChannelSchema.findOneAndDelete(query);
+    await interaction.followUp({
+      content: `Removed ${targetChannel} as welcome channel.`,
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
   } catch (error) {
-    console.log(`Error in ${__filename}\n`, error);
+    logger.error(error, "Database ada yang error bang!");
+    await interaction.followUp({
+      content: "Database error. Please try again later.",
+      flags: MessageFlags.Ephemeral,
+    });
   }
 }

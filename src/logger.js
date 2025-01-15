@@ -1,36 +1,20 @@
-import { Chalk } from "chalk";
+import { pino } from "pino";
+import PinoPretty from "pino-pretty";
 
-const warna = new Chalk({ level: 3 });
+const pretty = PinoPretty({
+  colorize: true,
+  customColors: "err:redBright,info:blue",
+  messageFormat: (log, messageKey, levelLabel, { colors }) => {
+    return `${colors.greenBright(log[messageKey])}`;
+  },
+  customPrettifiers: {
+    time: (timestamp) => `🕒 ${timestamp}`,
+    pid: (pid) => pid,
+  },
+  sync: false,
+});
 
-export default class Logger {
-  static info(message) {
-    console.log(
-      `${warna.blue.bold("[INFO]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-  static error(message) {
-    console.log(
-      `${warna.red.bold("[ERROR]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-  static success(message) {
-    console.log(
-      `${warna.green.bold("[SUCCESS]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-  static warn(message) {
-    console.log(
-      `${warna.yellow.bold("[WARNING]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-  static debug(message) {
-    console.log(
-      `${warna.magenta.bold("[DEBUG]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-  static default(message) {
-    console.log(
-      `${warna.white.bold("[DEFAULT]")} ${warna.whiteBright.bold(message)}`,
-    );
-  }
-}
+let logger = pino(pretty);
+logger.level = "debug";
+
+export { logger };
