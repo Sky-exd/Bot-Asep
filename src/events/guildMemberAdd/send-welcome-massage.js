@@ -5,10 +5,11 @@ import embedBase from "../../utils/embeds.js";
 import WelcomeLeave from "../../utils/WelcomeLeaveCanvas.js";
 import { logger } from "../../logger.js";
 
+
 const __filename = fileURLToPath(import.meta.url);
 
 const bannerWelcome =
-  "https://i.pinimg.com/736x/7e/bf/a6/7ebfa6019cd7901d143aac632467e7a7.jpg";
+  "https://i.pinimg.com/736x/48/03/b4/4803b4bd485b83c1944af16cfd744f6c.jpg";
 
 /**
  * @param {import('discord.js').GuildMember} guildMember
@@ -65,7 +66,6 @@ export default async function (guildMember) {
         .setTitle("Selamat Datang")
         .setDescription(welcomeMessage, "#FBFBFB")
         .setAvatarBorder("#3C3D37")
-        .setOverlayOpacity(0.5)
         .build();
 
       const attachment = new AttachmentBuilder(WelcomeCanvas, {
@@ -80,4 +80,5 @@ export default async function (guildMember) {
   } catch (error) {
     console.log(`Error in ${__filename}\n`, error);
   }
-}
+
+};
