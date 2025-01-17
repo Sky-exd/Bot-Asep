@@ -95,7 +95,6 @@ export async function run({ interaction }) {
           const size = statSync(tempFile).size;
 
           if (size >= 100 * 1024 * 1024 || size < 1024) {
-            logger.error(`File terlalu besar atau terlalu kecil`);
             await interaction.editReply({
               embeds: [
                 embedbase({
