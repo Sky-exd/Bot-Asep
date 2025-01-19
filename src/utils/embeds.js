@@ -1,7 +1,7 @@
 const userProfile =
   "https://cdn.discordapp.com/avatars/1315204083996692614/68842a9875a8a6161df490244ed64d7a.webp";
 
-export default function ({ type, message, title, options }) {
+function EmbedObject({ type, message, title, options }) {
   const EmbedObject = {
     author: {
       name: "Asep AI",
@@ -40,3 +40,6 @@ export default function ({ type, message, title, options }) {
   }
   return EmbedObject;
 }
+
+export { EmbedObject };
+export default EmbedObject;

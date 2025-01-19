@@ -3,12 +3,13 @@ import {
   GatewayIntentBits,
   ActivityType,
   Partials,
-  AttachmentBuilder,
+  Events,
 } from "discord.js";
 import { CommandKit } from "commandkit";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { config } from "./config.js";
+import { logger } from "./logger.js";
 
 const client = new Client({
   intents: [
@@ -35,6 +36,9 @@ const { token } = config;
     // devUserIds: ["1160607274008580126", "587193866831003662"],
     // bulkRegister: true,
   });
+  client.on(Events.Warn, (warn) => logger.warn(warn));
+  client.on(Events.Debug, (debug) => logger.debug(debug));
+  client.on(Events.Error, (err) => logger.error(err));
   try {
     await client.login(token);
     client.user.setPresence({

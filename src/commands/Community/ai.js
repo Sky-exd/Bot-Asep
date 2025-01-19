@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, MessageFlags } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  MessageFlags,
+} from "discord.js";
 import {
   GoogleGenerativeAI,
   HarmCategory,
@@ -6,7 +10,7 @@ import {
 } from "@google/generative-ai";
 import { config } from "../../config.js";
 import create from "../../utils/embeds.js";
-import logger from "../../logger.js";
+import { logger } from "../../logger.js";
 
 const GENERATION_CONFIG = {
   temperature: 0.9,
@@ -44,10 +48,10 @@ export const data = {
       name: "pertanyaan",
       description: "Silakan Mau tanya apa?",
       type: ApplicationCommandOptionType.String,
-      required: true
-    }
-  ]
-}
+      required: true,
+    },
+  ],
+};
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction }) => {
   if (!interaction.deferred && !interaction.replied)
@@ -57,7 +61,9 @@ export const run = async ({ interaction }) => {
   try {
     logger.info(`Mengirim pertanyaan ke AsepAI`);
     const geminiAI = new GoogleGenerativeAI(config.geminiAPIKey);
-    const modelGemini = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const modelGemini = geminiAI.getGenerativeModel({
+      model: "gemini-1.5-pro",
+    });
     const chat = modelGemini.startChat({
       generationConfig: GENERATION_CONFIG,
       safetySettings: SAFETY_SETTINGS,
@@ -66,8 +72,7 @@ export const run = async ({ interaction }) => {
     const result = await chat.sendMessage(pertanyaan);
     if (result.error) {
       logger.error(`AsepAI Sedang ada yang error!`);
-      console.error("Gemini AI ERROR Coba lagi nanti");
-      return await interaction.editReply({
+      await interaction.editReply({
         embeds: [
           create({
             type: "error",
@@ -75,6 +80,7 @@ export const run = async ({ interaction }) => {
           }),
         ],
       });
+      return;
     }
     const respon = result.response.text();
     const chunkMessageLimit = 2000;
@@ -82,20 +88,18 @@ export const run = async ({ interaction }) => {
       const pesan = respon.substring(i, i + chunkMessageLimit);
       await interaction.followUp({ content: pesan });
     }
-    logger.success(`AsepAI Bwrhasil menjawab pertanyaan`);
+    logger.info(`AsepAI Berhasil menjawab pertanyaan`);
   } catch (err) {
-    logger.error(`AsepAI otak nya konslet!`);
-    console.error(err);
-    return interaction.editReply({
+    logger.error(err, `AsepAI otak nya konslet!`);
+    await interaction.editReply({
       embeds: [
         create({
           type: "error",
-          message:
-            "Ada yang salah dengan ai gemini! Tolong Lapor pembuat nya!",
+          message: "Ada yang salah dengan ai gemini! Tolong Lapor pembuat nya!",
         }),
       ],
-      flags: MessageFlags.Ephemeral,
     });
+    return;
   }
 };
 

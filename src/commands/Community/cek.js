@@ -1,24 +1,39 @@
-import { SlashCommandBuilder, roleMention, bold } from "discord.js";
+import {
+  roleMention,
+  bold,
+  ApplicationCommandType,
+  ApplicationCommandOptionType,
+} from "discord.js";
 import { commandsBot } from "../../config.js";
 import embedBase from "../../utils/embeds.js";
+import { logger } from "../../logger.js";
 
-export const data = new SlashCommandBuilder()
-  .setName("cek")
-  .setDescription("apa yang mau di cek ?")
-  .addSubcommand((subcommand) =>
-    subcommand.setName("perintah").setDescription("cek perintah"),
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("role")
-      .setDescription("cek role")
-      .addUserOption((option) =>
-        option
-          .setName("user")
-          .setDescription("user yang mau dicek role")
-          .setRequired(true),
-      ),
-  );
+/** @type {import('commandkit').CommandData} */
+export const data = {
+  name: "cek",
+  description: "Mengecek Hal",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "perintah",
+      description: "Cek Perintah yang ada pada bot!",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+    {
+      name: "role",
+      description: "Cek Role Apa yang ada di User",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "user",
+          description: "User yang mau di cek",
+          type: ApplicationCommandOptionType.User,
+          required: true,
+        },
+      ],
+    },
+  ],
+};
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
 export const run = async ({ interaction }) => {
@@ -27,6 +42,7 @@ export const run = async ({ interaction }) => {
   const subcommand = interaction.options.getSubcommand();
   switch (subcommand) {
     case "perintah": {
+      logger.info(`${interaction.user.username} mengecek perintah bantu`);
       await interaction.editReply({
         embeds: [
           embedBase({
@@ -40,6 +56,9 @@ export const run = async ({ interaction }) => {
     }
     case "role": {
       const user = interaction.options.getUser("user");
+      logger.info(
+        `${interaction.user.username} mengecek role ${user.username}`,
+      );
       if (!user) {
         await interaction.editReply({
           embeds: [

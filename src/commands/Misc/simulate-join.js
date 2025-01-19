@@ -1,19 +1,32 @@
-import { SlashCommandBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  MessageFlags,
+} from "discord.js";
 
-export const data = new SlashCommandBuilder()
-  .setName("simulate-join")
-  .setDescription("Simulate a member join event.")
-  .addUserOption((option) =>
-    option
-      .setName("target-user")
-      .setDescription("Select the user you want to simulate join.")
-      .setRequired(true),
-  );
+/** @type {import('commandkit').CommandData} */
+export const data = {
+  name: "simulate-join",
+  description: "Simulasi Join Member ketika masuk guild",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "target-user",
+      description: "Pilih siapa user yang mau diuji coba",
+      type: ApplicationCommandOptionType.User,
+      required: true,
+    },
+  ],
+};
 
 /**
  * @param {import('commandkit').SlashCommandProps} param0
  */
 export async function run({ interaction, client }) {
+  if (!interaction.deferred && !interaction.replied)
+    await interaction.deferReply({
+      flags: MessageFlags.Ephemeral,
+    });
   const targetUser = interaction.options.getUser("target-user");
   let member;
 
@@ -27,5 +40,8 @@ export async function run({ interaction, client }) {
 
   client.emit("guildMemberAdd", member);
 
-  interaction.reply(`Simulated join event for ${member}`);
+  await interaction.editReply({
+    content: `Simulasi Join Member  User ${member}`,
+    flags: MessageFlags.Ephemeral,
+  });
 }

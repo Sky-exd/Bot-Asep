@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon --ext ts,js,json ./src/index.js",
+    "dev": "npx nodemon ./src/index.js",
     "start": "node ./src/index.js"
   },
   "author": "Soraexd",
@@ -15,7 +15,6 @@
     "@napi-rs/canvas": "^0.1.65",
     "@tobyg74/tiktok-api-dl": "^1.2.2",
     "axios": "^1.7.7",
-    "canvas": "^3.0.1",
     "commandkit": "^0.1.10",
     "discord.js": "^14.17.2",
     "dotenv": "^16.4.5",
@@ -28,7 +27,9 @@
     "eslint": "^9.16.0",
     "git-cz": "^4.9.0",
     "globals": "^15.13.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "pino": "^7.0.0-rc.9",
+    "pino-pretty": "^13.0.0"
   },
   "config": {
     "commitizen": {

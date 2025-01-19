@@ -40,7 +40,7 @@ export const run = async ({ interaction }) => {
     await interaction.deferReply();
   switch (subcommand) {
     case "ban": {
-      const guildId = interaction.guild?.id;
+      const guildId = interaction.guild.id;
       const kataBan = interaction.options.getString("kata");
       try {
         const cekKata = await banKataModel.findOne({ guildId, word: kataBan });

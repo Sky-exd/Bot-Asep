@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { AttachmentBuilder } from "discord.js";
 import embedBase from "../../utils/embeds.js";
 import WelcomeLeave from "../../utils/WelcomeLeaveCanvas.js";
+import { logger } from "../../logger.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -70,10 +71,11 @@ export default async function (guildMember) {
       const attachment = new AttachmentBuilder(WelcomeCanvas, {
         name: `welcome-${guildMember.id}.png`,
       });
-      targetChannel.send({
+      await targetChannel.send({
         content: `Halo ${guildMember.user.username}!, Semoga Betah di Server ${guildMember.guild.name}!`,
         files: [attachment],
       });
+      logger.info(`${guildMember.user.username}! Masuk Guild Bang!`);
     }
   } catch (error) {
     console.log(`Error in ${__filename}\n`, error);
