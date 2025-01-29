@@ -3,14 +3,13 @@ import { model, Schema } from "mongoose";
 const banKataSchema = new Schema({
   guildId: {
     type: String,
-    required: true,
-  },
-  word: {
-    type: String,
-    required: true,
     unique: true,
+    required: true,
   },
-
+  words: {
+    type: [String],
+    default: []
+  }
 })
 
 const banKataModel = model("bankata", banKataSchema);
