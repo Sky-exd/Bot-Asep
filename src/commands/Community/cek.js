@@ -5,8 +5,8 @@ import {
   ApplicationCommandOptionType,
 } from "discord.js";
 import { commandsBot } from "../../config.js";
-import embedBase from "../../utils/embeds.js";
 import { logger } from "../../logger.js";
+import EmbedBase from "../../utils/embeds.js";
 
 /** @type {import('commandkit').CommandData} */
 export const data = {
@@ -36,20 +36,27 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, client }) => {
   if (!interaction.replied && !interaction.deferred)
     await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand();
   switch (subcommand) {
     case "perintah": {
       logger.info(`${interaction.user.username} mengecek perintah bantu`);
+      const embed = new EmbedBase(
+        client,
+        "info",
+        commandsBot,
+        "**Daftar Perintah yang Didukung oleh Bot:**",
+      );
       await interaction.editReply({
         embeds: [
-          embedBase({
-            type: "info",
-            title: "**Daftar Perintah yang Didukung oleh Bot:**",
-            message: commandsBot,
-          }),
+          embed,
+          // embedBase({
+          //   type: "info",
+          //   title: "**Daftar Perintah yang Didukung oleh Bot:**",
+          //   message: commandsBot,
+          // }),
         ],
       });
       break;
