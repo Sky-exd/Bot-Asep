@@ -12,7 +12,7 @@ export default async function (message, client) {
 
   // otomatis balas pesan
   try {
-    const dataPesan = await autorespon.findOne({ guildId: guildId });
+    const dataPesan = await autorespon.findOne({ guildId });
     if (!dataPesan) return;
     for (const data of dataPesan.autorespon) {
       const pesan = data.pesan;
@@ -27,11 +27,11 @@ export default async function (message, client) {
 
   // ban kata kasar
   try {
-    const katakasar = await banKataModel.find({ guildId });
-    const kata = katakasar.some((kata) =>
-      msg.includes(kata.word.toLowerCase()),
-    );
-    if (kata) {
+    const dataKata = await banKataModel.findOne({ guildId });
+    if (!dataKata) return;
+
+    const katakasar = dataKata.words;
+    if (katakasar.some((kata) => msg.includes(kata))) {
       message.delete();
       const randomResponse =
         responses[Math.floor(Math.random() * responses.length)];
