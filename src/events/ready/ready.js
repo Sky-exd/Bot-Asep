@@ -4,6 +4,9 @@ import { logger } from "../../logger.js";
 
 const { mongodbURI } = config;
 
+/**
+ * @param {import('discord.js').Client} client
+ */
 export default async function (client) {
   try {
     mongoose.set("strictQuery", false);

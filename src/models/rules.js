@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
-const ruleSchema = new mongoose.Schema({
-    rule: String
+const rulesSchema = new mongoose.Schema({
+  rule: String,
 });
 
-const rule = mongoose.model("rule", ruleSchema);
+const rulesModel = mongoose.model("rule", rulesSchema);
 
-export default rule
+export default rulesModel;
+

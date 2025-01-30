@@ -21,12 +21,13 @@ export const data = {
   ],
 };
 
-export async function run({ interaction }) {
+/** @param {import('commandkit').SlashCommandProps} param0 */
+export const run = async ({ interaction }) => {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
   const targetChannel = interaction.options.getChannel("target-channel");
 
   const query = {
-    guildId: interaction.guildId,
+    guildId: interaction.guild?.id,
     channelId: targetChannel.id,
   };
 
@@ -54,4 +55,4 @@ export async function run({ interaction }) {
       flags: MessageFlags.Ephemeral,
     });
   }
-}
+};

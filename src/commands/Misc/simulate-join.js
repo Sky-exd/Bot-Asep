@@ -11,10 +11,30 @@ export const data = {
   type: ApplicationCommandType.ChatInput,
   options: [
     {
-      name: "target-user",
-      description: "Pilih siapa user yang mau diuji coba",
-      type: ApplicationCommandOptionType.User,
-      required: true,
+      name: "join",
+      description: "Simulasi Join Guild",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "user",
+          description: "Pilih siapa user yang mau diuji coba",
+          type: ApplicationCommandOptionType.User,
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "out",
+      description: "Simulasi keluar Guild",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "user",
+          description: "Pilih siapa user yang mau diuji coba",
+          type: ApplicationCommandOptionType.User,
+          required: true,
+        },
+      ],
     },
   ],
 };
@@ -27,9 +47,9 @@ export async function run({ interaction, client }) {
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral,
     });
-  const targetUser = interaction.options.getUser("target-user");
+  const targetUser = interaction.options.getUser("user");
+  const subcommand = interaction.options.getSubcommand();
   let member;
-
   if (targetUser) {
     member =
       interaction.guild.members.cache.get(targetUser.id) ||
@@ -37,11 +57,22 @@ export async function run({ interaction, client }) {
   } else {
     member = interaction.member;
   }
-
-  client.emit("guildMemberAdd", member);
-
-  await interaction.editReply({
-    content: `Simulasi Join Member  User ${member}`,
-    flags: MessageFlags.Ephemeral,
-  });
+  switch (subcommand) {
+    case "join": {
+      client.emit("guildMemberAdd", member);
+      await interaction.editReply({
+        content: `Simulasi Join Member  User ${member}`,
+        flags: MessageFlags.Ephemeral,
+      });
+      break;
+    }
+    case "out": {
+      client.emit("guildMemberRemove", member);
+      await interaction.editReply({
+        content: `Simulasi Keluar Member User ${member}`,
+        flags: MessageFlags.Ephemeral,
+      });
+      break;
+    }
+  }
 }

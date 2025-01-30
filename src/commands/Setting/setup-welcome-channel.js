@@ -39,7 +39,7 @@ export async function run({ interaction }) {
     const customMessage = interaction.options.getString("custom-message");
 
     const query = {
-      guildId: interaction.guildId,
+      guildId: interaction.guild.id,
       channelId: targetChannel.id,
     };
 

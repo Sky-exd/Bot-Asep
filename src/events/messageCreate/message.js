@@ -3,6 +3,10 @@ import autorespon from "../../models/AutoResponModel.js";
 import banKataModel from "../../models/bankataModel.js";
 import { logger } from "../../logger.js";
 
+/**
+ * @param {import('discord.js').Message} message
+ * @param {import('discord.js').Client} client
+ */
 export default async function (message, client) {
   if (message.author.bot) return;
   if (message.mentions.has(client.user)) message.reply("Kenapa Bang?");
