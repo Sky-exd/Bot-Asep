@@ -124,7 +124,7 @@ export const run = async ({ interaction }) => {
           await interaction.editReply({
             embeds: [embedBase({
               type: "info",
-              title: `Kata Kasar ${katakasar.map(word => `${spoiler(word)}`).join(' - ')} Berhasil di hapus dalam guild!`
+              title: `Kata Kasar ${wordDelete.map(word => `${spoiler(word)}`).join(' - ')} Berhasil di hapus dalam guild!`
             })]
           })
           return;
@@ -135,7 +135,7 @@ export const run = async ({ interaction }) => {
               message: "Gagal dalam menghapus kata kasar!"
             })]
           })
-          logger.error(err, "Tidak Berhasil dalam menghapus katabkasar")
+          logger.error(err, "Tidak Berhasil dalam menghapus kata kasar")
         }
       } catch (error) {
         logger.error(error, "Terjadi kesalahan dalam men akses database")
