@@ -1,7 +1,6 @@
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  MessageFlags,
 } from "discord.js";
 import {
   GoogleGenerativeAI,

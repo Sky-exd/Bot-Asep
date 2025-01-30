@@ -1,21 +1,23 @@
 import { EmbedBuilder } from "discord.js";
 
 class EmbedBase extends EmbedBuilder {
-  constructor(client, type = "info", message, title) {
+  constructor(options) {
     super();
-    if (!client || !client.user) throw new Error("Client harus diberikan!");
 
-    if (message) this.setDescription(message);
-    if (title) this.setTitle(title);
-    this.setType(type)
+    if (!options.client || !options.client.user)
+      throw new Error("Client harus diberikan!");
+
+    if (options.message) this.setDescription(options.message);
+    if (options.title) this.setTitle(options.title);
+    this.setType(options.type)
       .setTimestamp()
       .setAuthor({
-        name: client.user.username,
-        iconURL: client.user.displayAvatarURL(),
+        name: options.client.user.username,
+        iconURL: options.client.user.displayAvatarURL(),
       })
       .setFooter({
-        text: `${client.user.username} Bot System `,
-        iconURL: client.user.displayAvatarURL(),
+        text: `${options.client.user.username} Bot System `,
+        iconURL: options.client.user.displayAvatarURL(),
       });
   }
   setType(type) {

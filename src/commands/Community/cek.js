@@ -43,20 +43,14 @@ export const run = async ({ interaction, client }) => {
   switch (subcommand) {
     case "perintah": {
       logger.info(`${interaction.user.username} mengecek perintah bantu`);
-      const embed = new EmbedBase(
-        client,
-        "info",
-        commandsBot,
-        "**Daftar Perintah yang Didukung oleh Bot:**",
-      );
       await interaction.editReply({
         embeds: [
-          embed,
-          // embedBase({
-          //   type: "info",
-          //   title: "**Daftar Perintah yang Didukung oleh Bot:**",
-          //   message: commandsBot,
-          // }),
+          new EmbedBase({
+            client,
+            type: "info",
+            title: "**Daftar Perintah yang Didukung oleh Bot:**",
+            message: commandsBot,
+          }),
         ],
       });
       break;
@@ -69,10 +63,10 @@ export const run = async ({ interaction, client }) => {
       if (!user) {
         await interaction.editReply({
           embeds: [
-            embedBase({
+            new EmbedBase({
+              client,
               type: "error",
-              title: "Error",
-              message: "Tolong tag pengguna yang ingin dicek rolenya.",
+              title: "Tolong tag pengguna yang mau dicek role nya!",
             }),
           ],
         });
@@ -85,16 +79,14 @@ export const run = async ({ interaction, client }) => {
         .join(" - ");
       await interaction.editReply({
         embeds: [
-          embedBase({
+          new EmbedBase({
+            client,
             type: "info",
             title: `Role untuk ${bold(user.displayName)}`,
             message: `${role}`,
-            options: {
-              author: {
-                name: `${user.username}`,
-                icon_url: user.displayAvatarURL({ dynamic: true }),
-              },
-            },
+          }).setAuthor({
+            name: `${user.username}`,
+            iconURL: user.displayAvatarURL({ dynamic: true }),
           }),
         ],
       });
