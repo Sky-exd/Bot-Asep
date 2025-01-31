@@ -8,8 +8,8 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { config } from "../../config.js";
-import create from "../../utils/embeds.js";
 import { logger } from "../../logger.js";
+import EmbedBase from "../../utils/embeds.js";
 
 const GENERATION_CONFIG = {
   temperature: 0.9,
@@ -52,9 +52,8 @@ export const data = {
   ],
 };
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
-  if (!interaction.deferred && !interaction.replied)
-    await interaction.deferReply();
+export const run = async ({ interaction, client }) => {
+  await interaction.deferReply();
   logger.info(`${interaction.user.tag} tanya ke AsepAI`);
   const pertanyaan = interaction.options.getString("pertanyaan");
   try {
@@ -73,7 +72,8 @@ export const run = async ({ interaction }) => {
       logger.error(`AsepAI Sedang ada yang error!`);
       await interaction.editReply({
         embeds: [
-          create({
+          new EmbedBase({
+            client,
             type: "error",
             message: "Asep AI Sedang ada yang error! coba lagi nanti ",
           }),
@@ -92,7 +92,8 @@ export const run = async ({ interaction }) => {
     logger.error(err, `AsepAI otak nya konslet!`);
     await interaction.editReply({
       embeds: [
-        create({
+        new EmbedBase({
+          client,
           type: "error",
           message: "Ada yang salah dengan ai gemini! Tolong Lapor pembuat nya!",
         }),

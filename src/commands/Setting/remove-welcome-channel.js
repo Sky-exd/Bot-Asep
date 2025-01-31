@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
 import { logger } from "../../logger.js";
+import EmbedBase from "../../utils/embeds.js";
 
 /** @type {import('commandkit').CommandData} */
 export const data = {
@@ -22,12 +23,12 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, client }) => {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
   const targetChannel = interaction.options.getChannel("target-channel");
 
   const query = {
-    guildId: interaction.guild?.id,
+    guildId: interaction.guild.id,
     channelId: targetChannel.id,
   };
 
@@ -35,7 +36,13 @@ export const run = async ({ interaction }) => {
 
   if (!channelExistsInDb) {
     await interaction.followUp({
-      content: "This channel is not set as welcome channel.",
+      embeds: [
+        new EmbedBase({
+          client,
+          type: "error",
+          title: "Tidak ada channel yang di setting jadi Welcome Channel",
+        }),
+      ],
       flags: MessageFlags.Ephemeral,
     });
     return;
@@ -44,14 +51,25 @@ export const run = async ({ interaction }) => {
   try {
     await WelcomeChannelSchema.findOneAndDelete(query);
     await interaction.followUp({
-      content: `Removed ${targetChannel} as welcome channel.`,
+      embeds: [
+        new EmbedBase({
+          client,
+          title: `Berhasil Hapus ${targetChannel} sebagai welcome channel.`,
+        }),
+      ],
       flags: MessageFlags.Ephemeral,
     });
     return;
   } catch (error) {
     logger.error(error, "Database ada yang error bang!");
     await interaction.followUp({
-      content: "Database error. Please try again later.",
+      embeds: [
+        new EmbedBase({
+          client,
+          type: "error",
+          title: "Ada Kesalahan dalam Database, Tolong coba lagi nanti!",
+        }),
+      ],
       flags: MessageFlags.Ephemeral,
     });
   }

@@ -1,10 +1,7 @@
-import {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-  EmbedBuilder,
-} from "discord.js";
-import Rule from "../../models/rules.js";
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
+import Rule from "../../models/rulesModel.js";
 import { fileURLToPath } from "url";
+import EmbedBase from "../../utils/embeds.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -53,7 +50,7 @@ export const data = new SlashCommandBuilder()
   );
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, client }) => {
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand();
@@ -65,16 +62,27 @@ export const run = async ({ interaction }) => {
       try {
         const rule = new Rule({ rule: ruleText, banner: bannerUrl });
         await rule.save();
-        await interaction.editReply(
-          "Aturan baru telah ditambahkan!" +
-            (bannerUrl ? " Dengan banner." : ""),
-        );
+        await interaction.editReply({
+          embeds: [
+            new EmbedBase({
+              client,
+              title:
+                "Aturan baru telah ditambahkan!" +
+                (bannerUrl ? " Dengan banner." : ""),
+            }),
+          ],
+        });
       } catch (error) {
         console.error(`Error in ${__filename}\n`, error);
         await interaction.editReply({
-          content:
-            "Terjadi kesalahan saat menambahkan aturan. Silakan coba lagi nanti.",
-          ephemeral: true,
+          embeds: [
+            new EmbedBase({
+              client,
+              type: "error",
+              title:
+                "Terjadi kesalahan saat menambahkan aturan. Silakan coba lagi nanti.",
+            }),
+          ],
         });
       }
       break;
@@ -82,37 +90,41 @@ export const run = async ({ interaction }) => {
     case "remove": {
       const ruleNumber = interaction.options.getInteger("number");
 
-      const hasAdminRole = interaction.member.permissions.has(
-        PermissionFlagsBits.Administrator,
-      );
-
-      if (!hasAdminRole) {
-        return interaction.editReply({
-          content: "Kamu tidak memiliki izin untuk menggunakan perintah ini.",
-          ephemeral: true,
-        });
-      }
-
       try {
         const rules = await Rule.find();
         if (ruleNumber < 1 || ruleNumber > rules.length) {
           return interaction.editReply({
-            content: "Nomor aturan tidak valid.",
-            ephemeral: true,
+            embeds: [
+              new EmbedBase({
+                client,
+                type: "error",
+                title: "Nomor aturan tidak valid.",
+              }),
+            ],
           });
         }
 
         const ruleToRemove = rules[ruleNumber - 1];
         await Rule.deleteOne({ _id: ruleToRemove._id });
-        await interaction.editReply(
-          `Aturan nomor ${ruleNumber} telah dihapus!`,
-        );
+        await interaction.editReply({
+          embeds: [
+            new EmbedBase({
+              client,
+              title: `Aturan nomor ${ruleNumber} telah dihapus!`,
+            }),
+          ],
+        });
       } catch (error) {
         console.error(`Error in ${__filename}\n`, error);
         await interaction.editReply({
-          content:
-            "Terjadi kesalahan saat menghapus aturan. Silakan coba lagi nanti.",
-          ephemeral: true,
+          embeds: [
+            new EmbedBase({
+              client,
+              type: "error",
+              title:
+                "Terjadi kesalahan saat menghapus aturan. Silakan coba lagi nanti.",
+            }),
+          ],
         });
       }
       break;
@@ -123,12 +135,21 @@ export const run = async ({ interaction }) => {
       try {
         const rules = await Rule.find({});
         if (!rules.length) {
-          return interaction.editReply("Tidak ada peraturan yang ditemukan.");
+          await interaction.editReply({
+            embeds: [
+              new EmbedBase({
+                client,
+                title: "Tidak ada peraturan yang ditemukan.",
+              }),
+            ],
+          });
+          return;
         }
 
-        const embed = new EmbedBuilder()
-          .setTitle("Daftar Peraturan")
-          .setColor(0x0099ff);
+        const embed = new EmbedBase({
+          client,
+          title: "Daftar Peraturan",
+        });
 
         rules.forEach((rule, index) => {
           embed.addFields([
@@ -137,15 +158,20 @@ export const run = async ({ interaction }) => {
         });
 
         await targetChannel.send({ embeds: [embed] });
-        await interaction.editReply(
-          `Daftar peraturan telah dikirim ke ${targetChannel}`,
-        );
+        await interaction.editReply({
+          content: `Daftar peraturan telah dikirim ke ${targetChannel}`,
+        });
       } catch (error) {
         console.error(`Error in ${__filename}\n`, error);
         await interaction.editReply({
-          content:
-            "Terjadi kesalahan saat mengambil daftar peraturan. Silakan coba lagi nanti.",
-          ephemeral: true,
+          embeds: [
+            new EmbedBase({
+              client,
+              type: "error",
+              title:
+                "Terjadi kesalahan saat mengambil daftar peraturan. Silakan coba lagi nanti.",
+            }),
+          ],
         });
       }
       break;

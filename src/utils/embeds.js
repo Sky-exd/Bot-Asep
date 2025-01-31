@@ -20,7 +20,7 @@ class EmbedBase extends EmbedBuilder {
         iconURL: options.client.user.displayAvatarURL(),
       });
   }
-  setType(type) {
+  setType(type = "info") {
     switch (type) {
       case "info":
         this.setColor(0x00b0f4);

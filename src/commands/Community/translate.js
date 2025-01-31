@@ -5,7 +5,7 @@ import {
 import { translate, languages, getCode } from "google-translate-api-x";
 import { listISOCountry } from "../../config.js";
 import { logger } from "../../logger.js";
-import create from "../../utils/embeds.js";
+import EmbedBase from "../../utils/embeds.js";
 
 const listBahasa = [];
 for (const [iso, country] of Object.entries(listISOCountry)) {
@@ -42,7 +42,7 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export async function run({ interaction }) {
+export async function run({ interaction, client }) {
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
   const kalimat = interaction.options.getString("kalimat");
@@ -54,24 +54,21 @@ export async function run({ interaction }) {
     const { text, from } = await translate(kalimat, { to: keBahasa });
     await interaction.editReply({
       embeds: [
-        create({
-          type: "info",
+        new EmbedBase({
+          client,
           title: "Hasil Translate",
-          options: {
-            fields: [
-              {
-                name: `${languages[getCode(from.language.iso)]}`,
-                value: kalimat,
-                inline: true,
-              },
-              {
-                name: `${languages[getCode(keBahasa)]}`,
-                value: text,
-                inline: true,
-              },
-            ],
+        }).addFields(
+          {
+            name: `${languages[getCode(from.language.iso)]}`,
+            value: kalimat,
+            inline: true,
           },
-        }),
+          {
+            name: `${languages[getCode(keBahasa)]}`,
+            value: text,
+            inline: true,
+          },
+        ),
       ],
     });
     logger.info(
@@ -85,7 +82,8 @@ export async function run({ interaction }) {
     console.error(err);
     await interaction.editReply({
       embeds: [
-        create({
+        new EmbedBase({
+          client,
           type: "error",
           title: "Gagal Translate!!",
           message:

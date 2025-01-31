@@ -4,7 +4,7 @@ import {
   spoiler,
 } from "discord.js";
 import banKataModel from "../../models/bankataModel.js";
-import embedBase from "../../utils/embeds.js";
+import EmbedBase from "../../utils/embeds.js";
 import { logger } from "../../logger.js";
 
 /** @type {import('commandkit').CommandData} */
@@ -48,13 +48,13 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, client }) => {
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand();
+  const guildId = interaction.guild.id;
   switch (subcommand) {
     case "ban": {
-      const guildId = interaction.guild.id;
       const kataBan = interaction.options.getString("kata");
       try {
         let data = await banKataModel.findOne({ guildId });
@@ -70,8 +70,8 @@ export const run = async ({ interaction }) => {
           await data.save();
           await interaction.editReply({
             embeds: [
-              embedBase({
-                type: "info",
+              new EmbedBase({
+                client,
                 title: `Kata kasar ${katakasar.map((word) => `${spoiler(word)}`).join(" - ")} Berhasil Disimpan ke database!`,
               }),
             ],
@@ -85,14 +85,13 @@ export const run = async ({ interaction }) => {
       break;
     }
     case "list": {
-      const guildId = interaction.guild?.id;
       try {
         const bannedWords = await banKataModel.findOne({ guildId });
         if (!bannedWords) {
           await interaction.editReply({
             embeds: [
-              embedBase({
-                type: "info",
+              new EmbedBase({
+                client,
                 title: "Tidak ada kata kasar yang diban di guild ini!",
               }),
             ],
@@ -104,8 +103,8 @@ export const run = async ({ interaction }) => {
           .join(" - ");
         await interaction.editReply({
           embeds: [
-            embedBase({
-              type: "info",
+            new EmbedBase({
+              client,
               title: "Ini adalah kata kasar yang di ban di guild ini!",
               message: `${wordsList}`,
             }),
@@ -118,7 +117,6 @@ export const run = async ({ interaction }) => {
     }
     case "hapus": {
       const wordDanger = interaction.options.getString("kata");
-      const guildId = interaction.guild?.id;
       try {
         const wordDelete = wordDanger
           .split(",")
@@ -127,7 +125,8 @@ export const run = async ({ interaction }) => {
         if (!guildWord) {
           await interaction.editReply({
             embeds: [
-              embedBase({
+              new EmbedBase({
+                client,
                 type: "error",
                 message: "Guild ini belom memiliki kata kasar yang diban",
               }),
@@ -142,8 +141,8 @@ export const run = async ({ interaction }) => {
           await guildWord.save();
           await interaction.editReply({
             embeds: [
-              embedBase({
-                type: "info",
+              new EmbedBase({
+                client,
                 title: `Kata Kasar ${wordDelete.map((word) => `${spoiler(word)}`).join(" - ")} Berhasil di hapus dalam guild!`,
               }),
             ],
@@ -152,7 +151,8 @@ export const run = async ({ interaction }) => {
         } catch (err) {
           await interaction.editReply({
             embeds: [
-              embedBase({
+              new EmbedBase({
+                client,
                 type: "error",
                 message: "Gagal dalam menghapus kata kasar!",
               }),

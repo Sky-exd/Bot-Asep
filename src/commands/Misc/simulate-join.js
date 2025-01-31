@@ -3,6 +3,7 @@ import {
   ApplicationCommandType,
   MessageFlags,
 } from "discord.js";
+import EmbedBase from "../../utils/embeds.js";
 
 /** @type {import('commandkit').CommandData} */
 export const data = {
@@ -61,7 +62,13 @@ export async function run({ interaction, client }) {
     case "join": {
       client.emit("guildMemberAdd", member);
       await interaction.editReply({
-        content: `Simulasi Join Member  User ${member}`,
+        embeds: [
+          new EmbedBase({
+            client,
+            type: "info",
+            title: `Simulasi Join Member  User ${member}`,
+          }),
+        ],
         flags: MessageFlags.Ephemeral,
       });
       break;
@@ -69,7 +76,13 @@ export async function run({ interaction, client }) {
     case "out": {
       client.emit("guildMemberRemove", member);
       await interaction.editReply({
-        content: `Simulasi Keluar Member User ${member}`,
+        embeds: [
+          new EmbedBase({
+            client,
+            type: "info",
+            title: `Simulasi Keluar Member  User ${member}`,
+          }),
+        ],
         flags: MessageFlags.Ephemeral,
       });
       break;
