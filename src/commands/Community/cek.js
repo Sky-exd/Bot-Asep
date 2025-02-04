@@ -5,8 +5,8 @@ import {
   ApplicationCommandOptionType,
 } from "discord.js";
 import { commandsBot } from "../../config.js";
-import embedBase from "../../utils/embeds.js";
 import { logger } from "../../logger.js";
+import EmbedBase from "../../utils/embeds.js";
 
 /** @type {import('commandkit').CommandData} */
 export const data = {
@@ -36,7 +36,7 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
+export const run = async ({ interaction, client }) => {
   if (!interaction.replied && !interaction.deferred)
     await interaction.deferReply();
   const subcommand = interaction.options.getSubcommand();
@@ -45,7 +45,8 @@ export const run = async ({ interaction }) => {
       logger.info(`${interaction.user.username} mengecek perintah bantu`);
       await interaction.editReply({
         embeds: [
-          embedBase({
+          new EmbedBase({
+            client,
             type: "info",
             title: "**Daftar Perintah yang Didukung oleh Bot:**",
             message: commandsBot,
@@ -62,10 +63,10 @@ export const run = async ({ interaction }) => {
       if (!user) {
         await interaction.editReply({
           embeds: [
-            embedBase({
+            new EmbedBase({
+              client,
               type: "error",
-              title: "Error",
-              message: "Tolong tag pengguna yang ingin dicek rolenya.",
+              title: "Tolong tag pengguna yang mau dicek role nya!",
             }),
           ],
         });
@@ -78,16 +79,14 @@ export const run = async ({ interaction }) => {
         .join(" - ");
       await interaction.editReply({
         embeds: [
-          embedBase({
+          new EmbedBase({
+            client,
             type: "info",
             title: `Role untuk ${bold(user.displayName)}`,
             message: `${role}`,
-            options: {
-              author: {
-                name: `${user.username}`,
-                icon_url: user.displayAvatarURL({ dynamic: true }),
-              },
-            },
+          }).setAuthor({
+            name: `${user.username}`,
+            iconURL: user.displayAvatarURL({ dynamic: true }),
           }),
         ],
       });

@@ -1,97 +1,112 @@
-import { SlashCommandBuilder, spoiler } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  spoiler,
+} from "discord.js";
 import banKataModel from "../../models/bankataModel.js";
-import embedBase from "../../utils/embeds.js";
+import EmbedBase from "../../utils/embeds.js";
+import { logger } from "../../logger.js";
 
-export const data = new SlashCommandBuilder()
-  .setName("bankata")
-  .setDescription("Ban kata kasar agar guild jadi ramah")
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("ban")
-      .setDescription("Ban kata kasar nya")
-      .addStringOption((option) =>
-        option
-          .setName("kata")
-          .setDescription("Kata apa yang mau di ban?")
-          .setRequired(true),
-      ),
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("list")
-      .setDescription("List kata kasar apa yang di ban"),
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("hapus")
-      .setDescription("hapus kata kasar dari server")
-      .addStringOption((option) =>
-        option
-          .setName("kata")
-          .setDescription("Kata yang mau di hapus di server")
-          .setRequired(true),
-      ),
-  );
+/** @type {import('commandkit').CommandData} */
+export const data = {
+  name: "bankata",
+  description: "Ban Kata kasar agar guild jadi ramah",
+  type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "ban",
+      description: "Ban Kata kasar",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "kata",
+          description: "Gunakan koma untuk banyak kata yang diban!",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "list",
+      description: "List kata kasar apa yang diban!",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+    {
+      name: "hapus",
+      description: "Hapus Kata kasar",
+      type: ApplicationCommandOptionType.Subcommand,
+      options: [
+        {
+          name: "kata",
+          description: "Kata yang ingin di hapus?",
+          type: ApplicationCommandOptionType.String,
+          required: true,
+        },
+      ],
+    },
+  ],
+};
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export const run = async ({ interaction }) => {
-  const subcommand = interaction.options.getSubcommand();
+export const run = async ({ interaction, client }) => {
   if (!interaction.deferred && !interaction.replied)
     await interaction.deferReply();
+  const subcommand = interaction.options.getSubcommand();
+  const guildId = interaction.guild.id;
   switch (subcommand) {
     case "ban": {
-      const guildId = interaction.guild.id;
       const kataBan = interaction.options.getString("kata");
       try {
-        const cekKata = await banKataModel.findOne({ guildId, word: kataBan });
-        if (cekKata) {
-          return interaction.editReply({
+        let data = await banKataModel.findOne({ guildId });
+        const katakasar = kataBan
+          .split(",")
+          .map((word) => word.trim().toLowerCase());
+        if (data) {
+          data.words = [...new Set([...data.words, ...katakasar])];
+        } else {
+          data = new banKataModel({ guildId, words: katakasar });
+        }
+        try {
+          await data.save();
+          await interaction.editReply({
             embeds: [
-              embedBase({
-                type: "error",
-                title: `Kata ${spoiler(kataBan)} sudah di ban`,
+              new EmbedBase({
+                client,
+                title: `Kata kasar ${katakasar.map((word) => `${spoiler(word)}`).join(" - ")} Berhasil Disimpan ke database!`,
               }),
             ],
           });
+        } catch (err) {
+          logger.error(err, "Terjadi kesalahan dalam save data ke database!");
         }
-        const banKataBaru = new banKataModel({ guildId, word: kataBan });
-        banKataBaru.save();
-        await interaction.editReply({
-          embeds: [
-            embedBase({
-              type: "info",
-              title: `Kata ${spoiler(kataBan)} berhasil di ban`,
-            }),
-          ],
-        });
       } catch (error) {
-        console.error("Error cek kata", error);
+        logger.error(error, "Error cek kata");
       }
       break;
     }
     case "list": {
-      const guildId = interaction.guild?.id;
       try {
-        const bannedWords = await banKataModel.find({ guildId });
-        if (bannedWords.length === 0) {
-          return await interaction.editReply({
+        const bannedWords = await banKataModel.findOne({ guildId });
+        if (!bannedWords) {
+          await interaction.editReply({
             embeds: [
-              embedBase({
-                type: "error",
-                title: "Belum ada kata yang diban di server ini",
+              new EmbedBase({
+                client,
+                title: "Tidak ada kata kasar yang diban di guild ini!",
               }),
             ],
           });
+          return;
         }
-        const wordList = bannedWords
-          .map((wordObj) => `${spoiler(wordObj.word)}`)
-          .join(", ");
+        const wordsList = bannedWords.words
+          .map((word) => `${spoiler(word)}`)
+          .join(" - ");
         await interaction.editReply({
           embeds: [
-            embedBase({
-              type: "info",
-              title: "List kata yang diban di guild ini!!",
-              message: wordList,
+            new EmbedBase({
+              client,
+              title: "Ini adalah kata kasar yang di ban di guild ini!",
+              message: `${wordsList}`,
             }),
           ],
         });
@@ -101,34 +116,52 @@ export const run = async ({ interaction }) => {
       break;
     }
     case "hapus": {
-      const kataApus = interaction.options.getString("kata");
-      const guildId = interaction.guild?.id;
+      const wordDanger = interaction.options.getString("kata");
       try {
-        const deletedWord = await banKataModel.findOne({
-          guildId,
-          word: kataApus,
-        });
-        if (!deletedWord) {
-          return await interaction.editReply({
+        const wordDelete = wordDanger
+          .split(",")
+          .map((word) => word.trim().toLowerCase());
+        const guildWord = await banKataModel.findOne({ guildId });
+        if (!guildWord) {
+          await interaction.editReply({
             embeds: [
-              embedBase({
+              new EmbedBase({
+                client,
                 type: "error",
-                title: `Kata ${spoiler(kataApus)} tidak ada di list ban`,
+                message: "Guild ini belom memiliki kata kasar yang diban",
               }),
             ],
           });
+          return;
         }
-        await banKataModel.deleteOne({ guildId, word: kataApus });
-        await interaction.editReply({
-          embeds: [
-            embedBase({
-              type: "info",
-              title: `Kata ${spoiler(kataApus)} berhasil di hapus`,
-            }),
-          ],
-        });
-      } catch (err) {
-        console.error(err);
+        guildWord.words = guildWord.words.filter(
+          (word) => !wordDelete.includes(word),
+        );
+        try {
+          await guildWord.save();
+          await interaction.editReply({
+            embeds: [
+              new EmbedBase({
+                client,
+                title: `Kata Kasar ${wordDelete.map((word) => `${spoiler(word)}`).join(" - ")} Berhasil di hapus dalam guild!`,
+              }),
+            ],
+          });
+          return;
+        } catch (err) {
+          await interaction.editReply({
+            embeds: [
+              new EmbedBase({
+                client,
+                type: "error",
+                message: "Gagal dalam menghapus kata kasar!",
+              }),
+            ],
+          });
+          logger.error(err, "Tidak Berhasil dalam menghapus kata kasar");
+        }
+      } catch (error) {
+        logger.error(error, "Terjadi kesalahan dalam men akses database");
       }
       break;
     }

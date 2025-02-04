@@ -4,6 +4,7 @@ import {
   ApplicationCommandOptionType,
 } from "discord.js";
 import WelcomeChannelSchema from "../../models/WelcomeChannel.js";
+import EmbedBase from "../../utils/embeds.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +30,7 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export async function run({ interaction }) {
+export async function run({ interaction, client }) {
   try {
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral,
@@ -39,7 +40,7 @@ export async function run({ interaction }) {
     const customMessage = interaction.options.getString("custom-message");
 
     const query = {
-      guildId: interaction.guildId,
+      guildId: interaction.guild.id,
       channelId: targetChannel.id,
     };
 
@@ -47,7 +48,13 @@ export async function run({ interaction }) {
 
     if (channelExistsInDb) {
       await interaction.editReply({
-        content: "Channel yang anda masukan sudah ada di database.",
+        embeds: [
+          new EmbedBase({
+            client,
+            type: "error",
+            title: "Channel yang anda masukan sudah ada di database.",
+          }),
+        ],
         flags: MessageFlags.Ephemeral,
       });
 
@@ -62,12 +69,23 @@ export async function run({ interaction }) {
     try {
       await newWelcomeChannel.save();
       await interaction.followUp({
-        content: `Set ${targetChannel} as welcome channel.`,
+        embeds: [
+          new EmbedBase({
+            client,
+            title: `Berhasil Setting ${targetChannel} sebagai welcome channel.`,
+          }),
+        ],
         flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
       await interaction.followUp({
-        content: "Database error. Please try again later.",
+        embeds: [
+          new EmbedBase({
+            client,
+            type: "error",
+            title: "Ada Kesalahan dalam Database, Tolong coba lagi nanti!",
+          }),
+        ],
         flags: MessageFlags.Ephemeral,
       });
       console.log(`DB error in ${__filename}\n`, error);

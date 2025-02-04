@@ -31,10 +31,6 @@ const { token } = config;
     client,
     eventsPath: join(__dirname, "events"),
     commandsPath: join(__dirname, "commands"),
-    // devRoleIds: ["1231653267126095903", "1043103873902051338"],
-    // devGuildIds: [guildID],
-    // devUserIds: ["1160607274008580126", "587193866831003662"],
-    // bulkRegister: true,
   });
   client.on(Events.Warn, (warn) => logger.warn(warn));
   client.on(Events.Debug, (debug) => logger.debug(debug));

@@ -8,8 +8,8 @@ import { statSync, existsSync, unlinkSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { logger } from "../../logger.js";
-import embedbase from "../../utils/embeds.js";
 import downloadFile from "../../utils/downloadFile.js";
+import EmbedBase from "../../utils/embeds.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +39,7 @@ export const data = {
 };
 
 /** @param {import('commandkit').SlashCommandProps} param0 */
-export async function run({ interaction }) {
+export async function run({ interaction, client }) {
   if (!interaction.deferred && !interaction.replied) {
     await interaction.deferReply();
   }
@@ -53,7 +53,8 @@ export async function run({ interaction }) {
     );
     return interaction.editReply({
       embeds: [
-        embedbase({
+        new EmbedBase({
+          client,
           type: "error",
           message:
             "Link TikTok tidak valid! Pastikan link yang dimasukkan benar.",
@@ -71,7 +72,8 @@ export async function run({ interaction }) {
       logger.error(`${interaction.user.tag} memasukkan link TikTok yang salah`);
       await interaction.editReply({
         embeds: [
-          embedbase({
+          new EmbedBase({
+            client,
             type: "error",
             message:
               "Link TikTok tidak valid atau terjadi kesalahan saat memproses!",
@@ -97,7 +99,8 @@ export async function run({ interaction }) {
           if (size >= 100 * 1024 * 1024 || size < 1024) {
             await interaction.editReply({
               embeds: [
-                embedbase({
+                new EmbedBase({
+                  client,
                   type: "error",
                   message:
                     "File terlalu besar (maksimal 100MB) atau terlalu kecil!",
@@ -123,7 +126,8 @@ export async function run({ interaction }) {
           );
           await interaction.editReply({
             embeds: [
-              embedbase({
+              new EmbedBase({
+                client,
                 type: "error",
                 message: "Gagal mengunduh atau mengirim video TikTok!",
               }),
@@ -162,7 +166,8 @@ export async function run({ interaction }) {
           logger.error(error, `Gagal mengirim gambar TikTok`);
           await interaction.followUp({
             embeds: [
-              embedbase({
+              new EmbedBase({
+                client,
                 type: "error",
                 message: "Gagal mengirim gambar TikTok!",
               }),
@@ -176,7 +181,8 @@ export async function run({ interaction }) {
         logger.error(`Tipe konten TikTok tidak dikenali: ${result.type}`);
         await interaction.editReply({
           embeds: [
-            embedbase({
+            new EmbedBase({
+              client,
               type: "error",
               message: "Tipe konten TikTok tidak dikenali!",
             }),
@@ -189,7 +195,8 @@ export async function run({ interaction }) {
     logger.error(error, `Terjadi kesalahan saat memproses permintaan TikTok`);
     await interaction.editReply({
       embeds: [
-        embedbase({
+        new EmbedBase({
+          client,
           type: "error",
           message: "Terjadi kesalahan saat memproses permintaan TikTok!",
         }),
