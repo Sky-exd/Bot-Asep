@@ -102,7 +102,7 @@ export const run = async ({ interaction }) => {
       try {
         const rules = await Rule.find({});
         if (!rules.length) {
-          return interaction.editReply('Tidak ada peraturan yang ditemukan.');
+          return interaction.editReply('Tidak ada rules yang ditemukan.');
         }
 
         const embed = new EmbedBuilder()
@@ -110,7 +110,12 @@ export const run = async ({ interaction }) => {
           .setColor(0x0099ff);
 
         rules.forEach((rule, index) => {
-          embed.addFields([{ name: `Peraturan ${index + 1}`, value: rule.rule }]);
+          embed.addFields([{ name: `Rules ${index + 1}`, value: rule.rule }]);
+          if (rule.banner) {
+            embed.setImage(rule.banner);
+          } else {
+            console.warn(`URL banner tidak valid: ${rule.banner}`);
+          }
         });
 
         await targetChannel.send({ embeds: [embed] });
