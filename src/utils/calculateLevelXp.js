@@ -1,0 +1,1 @@
+export default (level) => 100 * level || 1;

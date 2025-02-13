@@ -2,6 +2,8 @@ import { responses } from "../../config.js";
 import autorespon from "../../models/AutoResponModel.js";
 import banKataModel from "../../models/bankataModel.js";
 import { logger } from "../../logger.js";
+import givexp from "./giveUserXp.js";
+
 
 /**
  * @param {import('discord.js').Message} message
@@ -13,6 +15,7 @@ export default async function (message, client) {
 
   const guildId = message.guild.id;
   const msg = message.content.toLowerCase();
+  await givexp(client, message);
 
   // otomatis balas pesan
   try {
