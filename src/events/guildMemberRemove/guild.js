@@ -4,6 +4,7 @@ import { logger } from "../../logger.js";
  */
 export default async function (guildMember) {
   try {
+    if (guildMember.user.bot) return;
     console.log("Ada yang keluar guild bang!");
   } catch (error) {
     logger.error(error, "Terjadi Kesalahan pada sistem!");

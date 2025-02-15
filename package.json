@@ -13,7 +13,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@napi-rs/canvas": "^0.1.65",
-    "@tobyg74/tiktok-api-dl": "^1.2.2",
+    "@tobyg74/tiktok-api-dl": "^1.2.3",
     "axios": "^1.7.7",
     "canvacord": "^6.0.2",
     "commandkit": "^0.1.10",

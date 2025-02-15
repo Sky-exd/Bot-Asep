@@ -15,6 +15,6 @@ const pretty = PinoPretty({
 });
 
 let logger = pino(pretty);
-logger.level = "debug";
+logger.level = "info";
 
 export { logger };
